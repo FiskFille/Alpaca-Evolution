@@ -1,8 +1,6 @@
 package fiskfille.alpaca.client.model.entity;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelCow;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
@@ -134,78 +132,77 @@ public class ModelAlpaca extends ModelBiped
         body.addChild(backUpperLeg2);
         body.addChild(frontUpperLeg1);
     }
-    
+
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-    	setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         body.render(f5);
     }
-    
+
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
     {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
-    
+
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
     {
-    	for (ModelRenderer modelrenderer : new ModelRenderer[]{frontLowerLeg1, frontLowerLeg2, backLowerLeg1, backLowerLeg2})
-    	{
-    		modelrenderer.rotateAngleX = 0;
-    		modelrenderer.rotationPointY = 5;
-    	}
-    	
-    	for (ModelRenderer modelrenderer : new ModelRenderer[]{frontFoot1, frontFoot2, backFoot1, backFoot2})
-    	{
-    		modelrenderer.rotateAngleX = 0;
-    		modelrenderer.rotationPointY = 3;
-    	}
-    	
-    	float f6 = (180F / (float)Math.PI);
-        neck.rotateAngleX = f4 / (180F / (float)Math.PI);
-        neck.rotateAngleY = f3 / (180F / (float)Math.PI);
-        body.rotateAngleX = ((float)Math.PI / 2F);
+        for (ModelRenderer modelrenderer : new ModelRenderer[] { frontLowerLeg1, frontLowerLeg2, backLowerLeg1, backLowerLeg2 })
+        {
+            modelrenderer.rotateAngleX = 0;
+            modelrenderer.rotationPointY = 5;
+        }
+
+        for (ModelRenderer modelrenderer : new ModelRenderer[] { frontFoot1, frontFoot2, backFoot1, backFoot2 })
+        {
+            modelrenderer.rotateAngleX = 0;
+            modelrenderer.rotationPointY = 3;
+        }
+
+        float f6 = (180F / (float) Math.PI);
+        neck.rotateAngleX = f4 / (180F / (float) Math.PI);
+        neck.rotateAngleY = f3 / (180F / (float) Math.PI);
+        body.rotateAngleX = ((float) Math.PI / 2F);
         frontUpperLeg1.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        frontUpperLeg2.rotateAngleX = MathHelper.cos(f * 0.6662F + (float)Math.PI) * 1.4F * f1;
-        backUpperLeg1.rotateAngleX = MathHelper.cos(f * 0.6662F + (float)Math.PI) * 1.4F * f1;
+        frontUpperLeg2.rotateAngleX = MathHelper.cos(f * 0.6662F + (float) Math.PI) * 1.4F * f1;
+        backUpperLeg1.rotateAngleX = MathHelper.cos(f * 0.6662F + (float) Math.PI) * 1.4F * f1;
         backUpperLeg2.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        
-        
+
         float f7;
-        
+
         if (onGround > 0)
         {
-        	f6 = onGround;
+            f6 = onGround;
             f6 = 1.0F - onGround;
             f6 *= f6;
             f6 *= f6;
             f6 = 1.0F - f6;
-            f7 = MathHelper.sin(f6 * (float)Math.PI);
-            float f8 = MathHelper.sin(onGround * (float)Math.PI) * -(bipedHead.rotateAngleX - 0.7F) * 0.75F;
-            neck.rotateAngleX = (float)((double)f7 * 1.2D + (double)f8) * 1.5F;
+            f7 = MathHelper.sin(f6 * (float) Math.PI);
+            float f8 = MathHelper.sin(onGround * (float) Math.PI) * -(bipedHead.rotateAngleX - 0.7F) * 0.75F;
+            neck.rotateAngleX = (float) ((double) f7 * 1.2D + (double) f8) * 1.5F;
         }
-        
+
         if (isSneak)
         {
-        	float amount = 0.45F;
-        	
-        	for (ModelRenderer modelrenderer : new ModelRenderer[]{frontUpperLeg1, frontUpperLeg2, backUpperLeg1, backUpperLeg2})
-        	{
-        		modelrenderer.rotateAngleX -= amount;
-        	}
-        	
-        	for (ModelRenderer modelrenderer : new ModelRenderer[]{frontLowerLeg1, frontLowerLeg2, backLowerLeg1, backLowerLeg2})
-        	{
-        		modelrenderer.rotateAngleX += amount * 2;
-        		modelrenderer.rotationPointY -= 0.75F;
-        	}
-        	
-        	for (ModelRenderer modelrenderer : new ModelRenderer[]{frontFoot1, frontFoot2, backFoot1, backFoot2})
-        	{
-        		modelrenderer.rotateAngleX -= amount;
-        		modelrenderer.rotationPointY -= 0.35F;
-        	}
+            float amount = 0.45F;
+
+            for (ModelRenderer modelrenderer : new ModelRenderer[] { frontUpperLeg1, frontUpperLeg2, backUpperLeg1, backUpperLeg2 })
+            {
+                modelrenderer.rotateAngleX -= amount;
+            }
+
+            for (ModelRenderer modelrenderer : new ModelRenderer[] { frontLowerLeg1, frontLowerLeg2, backLowerLeg1, backLowerLeg2 })
+            {
+                modelrenderer.rotateAngleX += amount * 2;
+                modelrenderer.rotationPointY -= 0.75F;
+            }
+
+            for (ModelRenderer modelrenderer : new ModelRenderer[] { frontFoot1, frontFoot2, backFoot1, backFoot2 })
+            {
+                modelrenderer.rotateAngleX -= amount;
+                modelrenderer.rotationPointY -= 0.35F;
+            }
         }
     }
 }

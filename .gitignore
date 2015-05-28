@@ -1,0 +1,16 @@
+/build
+/bin
+eclipse/
+saves/
+resourcepacks/
+mods/
+config/
+logs/
+screenshots/
+.gradle/
+.classpath
+.project
+.settings/
+build.gradle
+options.txt
+usernamecache.json
