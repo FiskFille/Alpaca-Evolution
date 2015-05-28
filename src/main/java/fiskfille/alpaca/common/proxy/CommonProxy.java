@@ -8,21 +8,21 @@ import fiskfille.alpaca.common.event.CommonEventHandler;
 
 public class CommonProxy
 {
-	public void preInit()
-	{
-		AlpacaEntities.load();
-		
-		registerEventHandler(new CommonEventHandler());
-	}
-	
-	public void registerEventHandler(Object obj)
-	{
-		MinecraftForge.EVENT_BUS.register(obj);
-        FMLCommonHandler.instance().bus().register(obj);
-	}
+    public void preInit()
+    {
+        AlpacaEntities.load();
 
-	public EntityPlayer getPlayer()
-	{
-		return null;
-	}
+        registerEventHandler(new CommonEventHandler());
+    }
+
+    public void registerEventHandler(Object obj)
+    {
+        MinecraftForge.EVENT_BUS.register(obj);
+        FMLCommonHandler.instance().bus().register(obj);
+    }
+
+    public EntityPlayer getPlayer()
+    {
+        return null;
+    }
 }

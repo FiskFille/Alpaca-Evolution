@@ -10,17 +10,17 @@ import fiskfille.alpaca.common.event.ClientEventHandler;
 
 public class ClientProxy extends CommonProxy
 {
-	public static ModelAlpaca modelAlpaca = new ModelAlpaca();
-	
-	public void preInit()
-	{
-		super.preInit();
-		registerEventHandler(new ClientEventHandler());
-		RenderingRegistry.registerEntityRenderingHandler(EntityCorpse.class, new RenderCorpse());
-	}
-	
-	public EntityPlayer getPlayer()
-	{
-		return Minecraft.getMinecraft().thePlayer;
-	}
+    public static ModelAlpaca modelAlpaca = new ModelAlpaca();
+
+    public void preInit()
+    {
+        super.preInit();
+        registerEventHandler(new ClientEventHandler());
+        RenderingRegistry.registerEntityRenderingHandler(EntityCorpse.class, new RenderCorpse());
+    }
+
+    public EntityPlayer getPlayer()
+    {
+        return Minecraft.getMinecraft().thePlayer;
+    }
 }
