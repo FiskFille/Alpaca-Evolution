@@ -43,6 +43,10 @@ public class ColorHelper
 		{
 			return 0x88B0B4;
 		}
+		else if (s.equals("40e85e42-21f6-46b6-b5b3-6aeb07f3e3fd")) // Lax
+		{
+			return 0x3D3D3D;
+		}
 		
 		return player.getCommandSenderName().hashCode();
 	}
