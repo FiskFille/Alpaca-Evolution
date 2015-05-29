@@ -23,6 +23,8 @@ public class FiskModelRenderer extends ModelRenderer
     public float scaleX = 1.0F;
     public float scaleY = 1.0F;
     public float scaleZ = 1.0F;
+    
+    public ModelRenderer parent;
 
     public FiskModelRenderer(ModelBase modelBase, String string)
     {
@@ -46,6 +48,26 @@ public class FiskModelRenderer extends ModelRenderer
         this(modelBase);
         this.setTextureOffset(textureX, textureY);
     }
+    
+    public void addChild(ModelRenderer renderer)
+    {
+        super.addChild(renderer);
+        
+        if (renderer instanceof FiskModelRenderer)
+        {
+            ((FiskModelRenderer)renderer).setParent(this);
+        }
+    }
+    
+    public void setParent(ModelRenderer renderer)
+    {
+    	parent = renderer;
+    }
+    
+    public boolean hasParent(FiskModelRenderer renderer)
+    {
+    	return renderer.parent != null;
+    }
 
     @SideOnly(Side.CLIENT)
     public void render(float f)
@@ -61,15 +83,17 @@ public class FiskModelRenderer extends ModelRenderer
                     this.compileDisplayList(f);
                 }
             	
-            	float f5 = 0.0625F;
-            	GL11.glTranslatef(this.offsetX, this.offsetY, this.offsetZ);
-            	GL11.glTranslatef(this.rotationPointX * f5, this.rotationPointY * f5, this.rotationPointZ * f5);
-            	GL11.glScalef(scaleX, scaleY, scaleZ);
-            	GL11.glTranslatef(-this.rotationPointX * f5, -this.rotationPointY * f5, -this.rotationPointZ * f5);
+            	
                 int i;
                 
                 if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F)
                 {
+                    float f5 = 0.0625F;
+                	GL11.glTranslatef(this.offsetX, this.offsetY, this.offsetZ);
+                	GL11.glTranslatef(this.rotationPointX * f5, this.rotationPointY * f5, this.rotationPointZ * f5);
+                	GL11.glScalef(scaleX, scaleY, scaleZ);
+                	GL11.glTranslatef(-this.rotationPointX * f5, -this.rotationPointY * f5, -this.rotationPointZ * f5);
+                	
                     if (this.rotationPointX == 0.0F && this.rotationPointY == 0.0F && this.rotationPointZ == 0.0F)
                     {
                         GL11.glCallList(this.displayList);
@@ -117,9 +141,10 @@ public class FiskModelRenderer extends ModelRenderer
                     {
                         GL11.glRotatef(this.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
                     }
-
+                    
+                	GL11.glScalef(scaleX, scaleY, scaleZ);
                     GL11.glCallList(this.displayList);
-
+                    
                     if (this.childModels != null)
                     {
                         for (i = 0; i < this.childModels.size(); ++i)
@@ -159,5 +184,77 @@ public class FiskModelRenderer extends ModelRenderer
     	this.scaleX = x;
     	this.scaleY = y;
     	this.scaleZ = z;
+    }
+    
+    public float getRotationPointX()
+    {
+    	float f = rotationPointX;
+    	
+    	if (parent instanceof FiskModelRenderer)
+    	{
+    		f += ((FiskModelRenderer)parent).getRotationPointX();
+    	}
+    	
+    	return f;
+    }
+    
+    public float getRotationPointY()
+    {
+    	float f = rotationPointY;
+    	
+    	if (parent instanceof FiskModelRenderer)
+    	{
+    		f += ((FiskModelRenderer)parent).getRotationPointY();
+    	}
+    	
+    	return f;
+    }
+    
+    public float getRotationPointZ()
+    {
+    	float f = rotationPointZ;
+    	
+    	if (parent instanceof FiskModelRenderer)
+    	{
+    		f += ((FiskModelRenderer)parent).getRotationPointZ();
+    	}
+    	
+    	return f;
+    }
+    
+    public float getRotateAngleX()
+    {
+    	float f = rotateAngleX;
+    	
+    	if (parent instanceof FiskModelRenderer)
+    	{
+    		f += ((FiskModelRenderer)parent).getRotateAngleX();
+    	}
+    	
+    	return f;
+    }
+    
+    public float getRotateAngleY()
+    {
+    	float f = rotateAngleY;
+    	
+    	if (parent instanceof FiskModelRenderer)
+    	{
+    		f += ((FiskModelRenderer)parent).getRotateAngleY();
+    	}
+    	
+    	return f;
+    }
+    
+    public float getRotateAngleZ()
+    {
+    	float f = rotateAngleZ;
+    	
+    	if (parent instanceof FiskModelRenderer)
+    	{
+    		f += ((FiskModelRenderer)parent).getRotateAngleZ();
+    	}
+    	
+    	return f;
     }
 }

@@ -111,8 +111,6 @@ public class ClientEventHandler
 			}
 			
 			GL11.glPushMatrix();
-			mc.getTextureManager().bindTexture(getAlpacaTexture(player));
-			
 			float scale = 1.05F;
 	        GL11.glTranslatef((float)event.x, (float)event.y, (float)event.z);
 			GL11.glRotatef(-player.renderYawOffset, 0, 1, 0);
@@ -137,7 +135,6 @@ public class ClientEventHandler
 			GL11.glTranslated(0.0D, 1.0D, -1);
 			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glRotatef(90, 1, 0, 0);
-			
 			
 			for (int i = 0; i < 4; ++i)
 			{
@@ -168,7 +165,6 @@ public class ClientEventHandler
 		        		GL11.glRotatef(30.0F - (float)k * 60.0F, 0.0F, 0.0F, 1.0F);
 		        		GL11.glTranslatef(0.0F, f11, 0.0F);
 		        		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		        		
 		        		renderArmor(player, i);
 		        	}
 
@@ -182,9 +178,6 @@ public class ClientEventHandler
 		        	GL11.glDepthFunc(GL11.GL_LEQUAL);
 		        }
 			}
-			
-        
-			
 			
 			GL11.glPopMatrix();
 		}
@@ -225,19 +218,19 @@ public class ClientEventHandler
 
         	if (slot == 3)
         	{
-        		ClientProxy.modelAlpacaArmor.renderHelmet(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F);
+        		ClientProxy.modelAlpacaArmor.renderHelmet();
         	}
         	else if (slot == 2)
         	{
-        		ClientProxy.modelAlpacaArmor.renderChestplate(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F);
+        		ClientProxy.modelAlpacaArmor.renderChestplate();
         	}
         	else if (slot == 1)
         	{
-        		ClientProxy.modelAlpacaArmor.renderLegs(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F, 0.8D);
+        		ClientProxy.modelAlpacaArmor.renderLegs(0.8F);
         	}
         	else if (slot == 0)
         	{
-        		ClientProxy.modelAlpacaArmor.renderLegs(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F, 1.1D);
+        		ClientProxy.modelAlpacaArmor.renderLegs(1.1F);
         	}
 
         	GL11.glColor4f(1, 1, 1, 1);
