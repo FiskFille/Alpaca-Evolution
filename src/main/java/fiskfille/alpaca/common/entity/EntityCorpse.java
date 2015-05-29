@@ -41,19 +41,26 @@ public class EntityCorpse extends EntityLiving
 	
 	public boolean isEntityInvulnerable()
 	{
-		return ticksExisted < 10;
+		return ticksExisted <= 20;
 	}
 	
 	public void onUpdate()
 	{
+		if (entity == null && worldObj.isRemote)
+		{
+			setDead();
+		}
+		
 		super.onUpdate();
 		
 		if (entity != null)
 		{
 			setSize(entity.height, entity.width);
-			entity.onLivingUpdate();
-			entity.onUpdate();
-			entity.onEntityUpdate();
+			
+			if (entity.deathTime < 20)
+			{
+				entity.deathTime += 2;
+			}
 		}
 		
 		if (ticksExisted > 2400)
@@ -97,7 +104,7 @@ public class EntityCorpse extends EntityLiving
 		if (entity instanceof EntityLiving)
 		{
 			entity.onDeath(damagesource);
-			int xp = (Integer)ObfuscationReflectionHelper.getPrivateValue(EntityLiving.class, (EntityLiving)entity, "experienceValue");
+			int xp = (Integer)ObfuscationReflectionHelper.getPrivateValue(EntityLiving.class, (EntityLiving)entity, "experienceValue", "field_70728_aV");
 			xp = Math.max(xp, 2);
 			
 			if (entity.worldObj.isRemote)

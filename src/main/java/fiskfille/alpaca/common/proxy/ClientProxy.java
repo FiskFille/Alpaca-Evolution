@@ -3,16 +3,17 @@ package fiskfille.alpaca.common.proxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import fiskfille.alpaca.AlpacaReflection;
-import fiskfille.alpaca.client.model.entity.ModelAlpaca;
+import fiskfille.alpaca.client.model.entity.ModelAlpacaArmor;
+import fiskfille.alpaca.client.model.entity.ModelAlpacaBase;
 import fiskfille.alpaca.client.render.entity.RenderCorpse;
+import fiskfille.alpaca.common.data.AlpacaModelManager;
 import fiskfille.alpaca.common.entity.EntityCorpse;
 import fiskfille.alpaca.common.event.ClientEventHandler;
 
 public class ClientProxy extends CommonProxy
 {
-	public static ModelAlpaca modelAlpaca = new ModelAlpaca();
+	public static ModelAlpacaArmor modelAlpacaArmor = new ModelAlpacaArmor();
 	
 	public void preInit()
 	{
@@ -27,5 +28,10 @@ public class ClientProxy extends CommonProxy
 	public EntityPlayer getPlayer()
 	{
 		return Minecraft.getMinecraft().thePlayer;
+	}
+	
+	public static ModelAlpacaBase getModelAlpaca()
+	{
+		return AlpacaModelManager.alpacas[AlpacaModelManager.getModelID()];
 	}
 }

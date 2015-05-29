@@ -7,7 +7,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 
-public class ModelAlpaca extends ModelBiped
+public class ModelAlpaca extends ModelAlpacaBase
 {
     public ModelRenderer body;
     public ModelRenderer tail;
@@ -212,5 +212,15 @@ public class ModelAlpaca extends ModelBiped
         	backFoot1.rotateAngleX -= backUpperLeg1.rotateAngleX + amount;
         	backFoot2.rotateAngleX -= backUpperLeg2.rotateAngleX + amount;
         }
+    }
+    
+    public ModelRenderer getArm()
+    {
+    	return frontUpperLeg1;
+    }
+    
+    public ModelRenderer getNeck()
+    {
+    	return neck;
     }
 }

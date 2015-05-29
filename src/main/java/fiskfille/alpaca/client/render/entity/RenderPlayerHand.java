@@ -10,6 +10,10 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import fiskfille.alpaca.Alpaca;
+import fiskfille.alpaca.common.color.ColorHelper;
+import fiskfille.alpaca.common.proxy.ClientProxy;
+
 public class RenderPlayerHand extends RenderPlayer 
 {
 	public float progress;
@@ -24,7 +28,7 @@ public class RenderPlayerHand extends RenderPlayer
 		if (replacement != null)
 		{
 			float f = 1.0F;
-			Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLoc); //try func_110776_a
+//			Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLoc); //try func_110776_a
 
 			GL11.glColor4f(f, f, f, progress);
 			GL11.glEnable(GL11.GL_BLEND);
@@ -47,9 +51,15 @@ public class RenderPlayerHand extends RenderPlayer
 			replacement.rotationPointX = arm.rotationPointX;
 			replacement.rotationPointY = arm.rotationPointY + heightDiff;
 			replacement.rotationPointZ = arm.rotationPointZ;
-
 			biped.onGround = 0.0F;
 			biped.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
+			
+			
+			Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(Alpaca.modid, "textures/entity/alpaca/alpaca.png"));
+			biped.bipedRightArm.render(0.0625F);
+	        
+			Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(Alpaca.modid, "textures/entity/alpaca/alpaca_overlay.png"));
+	        ColorHelper.setColorFromInt(ColorHelper.getAlpacaColor(player), 1.0F);
 			biped.bipedRightArm.render(0.0625F);
 			biped.bipedRightArm = arm;
 			replacement.rotationPointX = rotX;

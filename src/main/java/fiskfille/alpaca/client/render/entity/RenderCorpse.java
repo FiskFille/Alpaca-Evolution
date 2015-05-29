@@ -1,14 +1,15 @@
 package fiskfille.alpaca.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.model.ModelChicken;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import fiskfille.alpaca.common.entity.EntityCorpse;
@@ -37,7 +38,12 @@ public class RenderCorpse extends RenderLiving
         	if (render != null)
         	{
         		GL11.glPushMatrix();
-        		GL11.glTranslatef(0, entity.entity.width / 2, 0);
+        		
+        		if (!(entity.entity instanceof EntitySquid))
+        		{
+        			GL11.glTranslatef(-entity.entity.height / 4, entity.entity.width / 2, -entity.entity.height / 4);
+        		}
+        		
         		render.doRender(entity.entity, d, d1, d2, f, f1);
         		GL11.glPopMatrix();
         	}
