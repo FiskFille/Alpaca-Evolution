@@ -129,7 +129,7 @@ public class ClientEventHandler
 			{
 	            GL11.glEnable(GL11.GL_BLEND);
 	            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				renderAlpaca(player, 0.5F);
+				renderAlpaca(player, 0.35F);
 			}
 			
 			GL11.glTranslated(0.0D, 1.0D, -1);
@@ -200,12 +200,12 @@ public class ClientEventHandler
         
         ItemStack itemstack = player.getCurrentArmor(slot);
 
-        if (itemstack != null)
+        if (itemstack != null && itemstack.getItem() instanceof ItemArmor)
         {
         	ItemArmor itemarmor = (ItemArmor)itemstack.getItem();
         	mc.getTextureManager().bindTexture(RenderBiped.getArmorResource(player, itemstack, 3 - slot, null));
         	ClientProxy.modelAlpacaArmor.syncArmorAngles((ModelAlpaca)ClientProxy.getModelAlpaca());
-
+        	
         	int j = itemarmor.getColor(itemstack);
 
         	if (j != -1)

@@ -30,10 +30,10 @@ public class RenderPlayerHand extends RenderPlayer
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			
-			GL11.glTranslatef(0, -0.2F, 0.0F);
+			GL11.glTranslatef(0, -0.25F, 0.0F);
 
-			ModelRenderer arm = ClientProxy.getModelAlpaca().bipedRightArm;
-			ClientProxy.getModelAlpaca().bipedRightArm = replacement;
+			ModelRenderer arm = biped.bipedRightArm;
+			biped.bipedRightArm = replacement;
 
 			//player arms are 12 blocks long
 			int heightDiff = 12 - getModelHeight(replacement);
@@ -47,18 +47,18 @@ public class RenderPlayerHand extends RenderPlayer
 			replacement.rotationPointX = arm.rotationPointX;
 			replacement.rotationPointY = arm.rotationPointY + heightDiff;
 			replacement.rotationPointZ = arm.rotationPointZ;
-			ClientProxy.getModelAlpaca().onGround = 0.0F;
-			ClientProxy.getModelAlpaca().isSneak = false;
-			ClientProxy.getModelAlpaca().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
+			biped.onGround = 0.0F;
+			biped.isSneak = false;
+			biped.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
 			
 			
 			Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(Alpaca.modid, "textures/entity/alpaca/alpaca.png"));
-			ClientProxy.getModelAlpaca().bipedRightArm.render(0.0625F);
+			biped.bipedRightArm.render(0.0625F);
 	        
 			Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(Alpaca.modid, "textures/entity/alpaca/alpaca_overlay.png"));
 	        ColorHelper.setColorFromInt(ColorHelper.getAlpacaColor(player), 1.0F);
-			ClientProxy.getModelAlpaca().bipedRightArm.render(0.0625F);
-			ClientProxy.getModelAlpaca().bipedRightArm = arm;
+			biped.bipedRightArm.render(0.0625F);
+			biped.bipedRightArm = arm;
 			replacement.rotationPointX = rotX;
 			replacement.rotationPointY = rotY;
 			replacement.rotationPointZ = rotZ;
