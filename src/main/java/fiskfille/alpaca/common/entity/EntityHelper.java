@@ -18,7 +18,7 @@ import fiskfille.alpaca.Alpaca;
 
 /**
  * Class for registering entities, removing entities and getting entities.
- * 
+ *
  * @author iLexiconn & Gegy1000 & FiskFille
  */
 public class EntityHelper
@@ -147,8 +147,7 @@ public class EntityHelper
 
     private static int getUniqueEntityId()
     {
-        do
-            startEntityId++;
+        do startEntityId++;
         while (EntityList.getStringFromID(startEntityId) != null);
         return startEntityId;
     }
@@ -159,7 +158,7 @@ public class EntityHelper
 
         try
         {
-            entity = (Entity) entityClass.getConstructor(new Class[] { World.class }).newInstance(world);
+            entity = (Entity) entityClass.getConstructor(new Class[]{World.class}).newInstance(world);
         }
         catch (Exception e)
         {
