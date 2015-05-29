@@ -47,6 +47,10 @@ public class ColorHelper
 		{
 			return 0x3D3D3D;
 		}
+		else if (s.equals("e63a1d61-adf1-4d47-b5f8-43efc5c84908")) // Phase
+		{
+			return 0xF261BF;
+		}
 		
 		return player.getCommandSenderName().hashCode();
 	}
