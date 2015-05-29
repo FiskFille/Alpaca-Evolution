@@ -24,7 +24,6 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -32,8 +31,6 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import org.lwjgl.opengl.GL11;
-
-import scala.actors.threadpool.Arrays;
 
 import com.mojang.authlib.GameProfile;
 
@@ -44,7 +41,6 @@ import fiskfille.alpaca.Alpaca;
 import fiskfille.alpaca.AlpacaReflection;
 import fiskfille.alpaca.client.model.entity.ModelAlpaca;
 import fiskfille.alpaca.client.model.entity.ModelAlpacaBase;
-import fiskfille.alpaca.client.model.tools.FiskModelRenderer;
 import fiskfille.alpaca.client.render.entity.RenderPlayerHand;
 import fiskfille.alpaca.common.color.ColorHelper;
 import fiskfille.alpaca.common.data.AlpacaModelManager;
@@ -52,6 +48,8 @@ import fiskfille.alpaca.common.proxy.ClientProxy;
 
 public class ClientEventHandler
 {
+	private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+	
 	private Minecraft mc = Minecraft.getMinecraft();
 	public RenderPlayerHand renderHandInstance;
 	public float renderTick;
@@ -86,7 +84,6 @@ public class ClientEventHandler
 			
 			GL11.glPushMatrix();
 			GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-			Alpaca.proxy.clientEventHandler.renderHandInstance.progress = 1.0F;
             Alpaca.proxy.clientEventHandler.renderHandInstance.setParent(rend);
             Alpaca.proxy.clientEventHandler.renderHandInstance.resourceLoc = getAlpacaTexture(mc.thePlayer);
             Alpaca.proxy.clientEventHandler.renderHandInstance.replacement = ClientProxy.getModelAlpaca().getArm();
@@ -142,42 +139,50 @@ public class ClientEventHandler
 			GL11.glRotatef(90, 1, 0, 0);
 			
 			
-			renderArmor(player);
-			
+			for (int i = 0; i < 4; ++i)
+			{
+				renderArmor(player, i);
+				ItemStack itemstack = player.getCurrentArmor(i);
 
-//            f8 = (float)p_76986_1_.ticksExisted + p_76986_9_;
-//            this.bindTexture(RES_ITEM_GLINT);
-//            GL11.glEnable(GL11.GL_BLEND);
-//            f9 = 0.5F;
-//            GL11.glColor4f(f9, f9, f9, 1.0F);
-//            GL11.glDepthFunc(GL11.GL_EQUAL);
-//            GL11.glDepthMask(false);
-//
-//            for (int k = 0; k < 2; ++k)
-//            {
-//                GL11.glDisable(GL11.GL_LIGHTING);
-//                f10 = 0.76F;
-//                GL11.glColor4f(0.5F * f10, 0.25F * f10, 0.8F * f10, 1.0F);
-//                GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
-//                GL11.glMatrixMode(GL11.GL_TEXTURE);
-//                GL11.glLoadIdentity();
-//                float f11 = f8 * (0.001F + (float)k * 0.003F) * 20.0F;
-//                float f12 = 0.33333334F;
-//                GL11.glScalef(f12, f12, f12);
-//                GL11.glRotatef(30.0F - (float)k * 60.0F, 0.0F, 0.0F, 1.0F);
-//                GL11.glTranslatef(0.0F, f11, 0.0F);
-//                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-//                this.renderPassModel.render(p_76986_1_, f7, f6, f4, f3 - f2, f13, f5);
-//            }
-//
-//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            GL11.glMatrixMode(GL11.GL_TEXTURE);
-//            GL11.glDepthMask(true);
-//            GL11.glLoadIdentity();
-//            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-//            GL11.glEnable(GL11.GL_LIGHTING);
-//            GL11.glDisable(GL11.GL_BLEND);
-//            GL11.glDepthFunc(GL11.GL_LEQUAL);
+		        if (itemstack != null && itemstack.isItemEnchanted())
+		        {
+		        	float f8 = (float)player.ticksExisted + renderTick;
+		        	mc.getTextureManager().bindTexture(RES_ITEM_GLINT);
+		        	GL11.glEnable(GL11.GL_BLEND);
+		        	float f9 = 0.5F;
+		        	GL11.glColor4f(f9, f9, f9, 1.0F);
+		        	GL11.glDepthFunc(GL11.GL_EQUAL);
+		        	GL11.glDepthMask(false);
+
+		        	for (int k = 0; k < 2; ++k)
+		        	{
+		        		GL11.glDisable(GL11.GL_LIGHTING);
+		        		float f10 = 0.76F;
+		        		GL11.glColor4f(0.5F * f10, 0.25F * f10, 0.8F * f10, 1.0F);
+		        		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+		        		GL11.glMatrixMode(GL11.GL_TEXTURE);
+		        		GL11.glLoadIdentity();
+		        		float f11 = f8 * (0.001F + (float)k * 0.003F) * 20.0F;
+		        		float f12 = 0.33333334F;
+		        		GL11.glScalef(f12, f12, f12);
+		        		GL11.glRotatef(30.0F - (float)k * 60.0F, 0.0F, 0.0F, 1.0F);
+		        		GL11.glTranslatef(0.0F, f11, 0.0F);
+		        		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		        		
+		        		renderArmor(player, i);
+		        	}
+
+		        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		        	GL11.glMatrixMode(GL11.GL_TEXTURE);
+		        	GL11.glDepthMask(true);
+		        	GL11.glLoadIdentity();
+		        	GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		        	GL11.glEnable(GL11.GL_LIGHTING);
+		        	GL11.glDisable(GL11.GL_BLEND);
+		        	GL11.glDepthFunc(GL11.GL_LEQUAL);
+		        }
+			}
+			
         
 			
 			
@@ -185,7 +190,7 @@ public class ClientEventHandler
 		}
 	}
 	
-	public void renderArmor(EntityPlayer player)
+	public void renderArmor(EntityPlayer player, int slot)
 	{
 		float f6 = player.prevLimbSwingAmount + (player.limbSwingAmount - player.prevLimbSwingAmount) * 0.0625F;
         float f7 = player.limbSwing - player.limbSwingAmount * 0.0625F;
@@ -200,46 +205,43 @@ public class ClientEventHandler
             f6 = 1.0F;
         }
         
-		for (int i = 0; i < 4; ++i)
-		{
-			ItemStack itemstack = player.getCurrentArmor(i);
-			
-			if (itemstack != null)
-			{
-				ItemArmor itemarmor = (ItemArmor)itemstack.getItem();
-				mc.getTextureManager().bindTexture(RenderBiped.getArmorResource(player, itemstack, 3 - i, null));
-				ClientProxy.modelAlpacaArmor.syncArmorAngles((ModelAlpaca)ClientProxy.getModelAlpaca());
-				
-				int j = itemarmor.getColor(itemstack);
-				
-                if (j != -1)
-                {
-                    float f1 = (float)(j >> 16 & 255) / 255.0F;
-                    float f2 = (float)(j >> 8 & 255) / 255.0F;
-                    float f3 = (float)(j & 255) / 255.0F;
-                    GL11.glColor3f(f1, f2, f3);
-                }
-				
-				if (i == 3)
-				{
-					ClientProxy.modelAlpacaArmor.renderHelmet(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F);
-				}
-				else if (i == 2)
-				{
-					ClientProxy.modelAlpacaArmor.renderChestplate(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F);
-				}
-				else if (i == 1)
-				{
-					ClientProxy.modelAlpacaArmor.renderLegs(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F, 0.8D);
-				}
-				else if (i == 0)
-				{
-					ClientProxy.modelAlpacaArmor.renderLegs(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F, 1.1D);
-				}
-				
-				GL11.glColor4f(1, 1, 1, 1);
-			}
-		}
+        ItemStack itemstack = player.getCurrentArmor(slot);
+
+        if (itemstack != null)
+        {
+        	ItemArmor itemarmor = (ItemArmor)itemstack.getItem();
+        	mc.getTextureManager().bindTexture(RenderBiped.getArmorResource(player, itemstack, 3 - slot, null));
+        	ClientProxy.modelAlpacaArmor.syncArmorAngles((ModelAlpaca)ClientProxy.getModelAlpaca());
+
+        	int j = itemarmor.getColor(itemstack);
+
+        	if (j != -1)
+        	{
+        		float f1 = (float)(j >> 16 & 255) / 255.0F;
+        		float f2 = (float)(j >> 8 & 255) / 255.0F;
+        		float f3 = (float)(j & 255) / 255.0F;
+        		GL11.glColor3f(f1, f2, f3);
+        	}
+
+        	if (slot == 3)
+        	{
+        		ClientProxy.modelAlpacaArmor.renderHelmet(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F);
+        	}
+        	else if (slot == 2)
+        	{
+        		ClientProxy.modelAlpacaArmor.renderChestplate(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F);
+        	}
+        	else if (slot == 1)
+        	{
+        		ClientProxy.modelAlpacaArmor.renderLegs(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F, 0.8D);
+        	}
+        	else if (slot == 0)
+        	{
+        		ClientProxy.modelAlpacaArmor.renderLegs(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F, 1.1D);
+        	}
+
+        	GL11.glColor4f(1, 1, 1, 1);
+        }
 	}
 
 	public void renderAlpaca(EntityPlayer player, float alpha)

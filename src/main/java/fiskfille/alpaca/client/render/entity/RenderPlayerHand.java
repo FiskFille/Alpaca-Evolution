@@ -16,7 +16,6 @@ import fiskfille.alpaca.common.proxy.ClientProxy;
 
 public class RenderPlayerHand extends RenderPlayer 
 {
-	public float progress;
 	public RenderPlayer parent;
 	public ModelBiped biped;
 	public ModelRenderer replacement;
@@ -27,10 +26,7 @@ public class RenderPlayerHand extends RenderPlayer
 	{
 		if (replacement != null)
 		{
-			float f = 1.0F;
-//			Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLoc); //try func_110776_a
-
-			GL11.glColor4f(f, f, f, progress);
+			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			
@@ -69,7 +65,7 @@ public class RenderPlayerHand extends RenderPlayer
 			replacement.rotateAngleY = angY;
 			replacement.rotateAngleZ = angZ;
 			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glColor4f(f, f, f, 1.0F);
+			GL11.glColor4f(1, 1, 1, 1);
 		}
 	}
 
