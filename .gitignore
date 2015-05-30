@@ -11,6 +11,5 @@ screenshots/
 .classpath
 .project
 .settings/
-build.gradle
 options.txt
 usernamecache.json
