@@ -52,11 +52,15 @@ public class PacketSetCorpseEntity implements IMessage
                 if (entity1 instanceof EntityCorpse)
                 {
                     EntityCorpse corpse = (EntityCorpse) entity1;
-                    // corpse.entity = (EntityLivingBase)EntityHelper.getEntityFromClass(entity.getClass(), corpse.worldObj);
-                    corpse.entity = entity;
-                    corpse.entity.deathTime = 0;
-                    corpse.setVelocity(entity.motionX, entity.motionY, entity.motionZ);
-                    // corpse.entity.setLocationAndAngles(0, 0, 0, entity.rotationYaw, entity.rotationPitch);
+                    
+                    if(corpse.entity != null)
+                    {
+                        // corpse.entity = (EntityLivingBase)EntityHelper.getEntityFromClass(entity.getClass(), corpse.worldObj);
+                        corpse.entity = entity;
+                        corpse.entity.deathTime = 0;
+                        corpse.setVelocity(entity.motionX, entity.motionY, entity.motionZ);
+                        // corpse.entity.setLocationAndAngles(0, 0, 0, entity.rotationYaw, entity.rotationPitch);
+                    }
                 }
             }
 
