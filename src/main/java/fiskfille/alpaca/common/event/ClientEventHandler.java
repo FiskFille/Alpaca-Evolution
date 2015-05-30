@@ -345,7 +345,7 @@ public class ClientEventHandler
 
                 if (player.getCommandSenderName().equals("deadmau5") && hasSkin)
                 {
-                    renderManager.renderEngine.bindTexture(player.getLocationCape());
+                    renderManager.renderEngine.bindTexture(player.getLocationSkin());
 
                     for (int j = 0; j < 2; ++j)
                     {
@@ -371,7 +371,7 @@ public class ClientEventHandler
 
                 if (hasCape && !player.isInvisible() && !player.getHideCape())
                 {
-                    renderManager.renderEngine.bindTexture(player.getLocationSkin());
+                    renderManager.renderEngine.bindTexture(player.getLocationCape());
                     GL11.glPushMatrix();
                     modelBipedMain.bipedBody.postRender(0.0625F);
 
