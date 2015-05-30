@@ -5,7 +5,7 @@ import net.minecraft.client.model.ModelRenderer;
 
 public abstract class ModelAlpacaBase extends ModelBiped
 {
-	public abstract ModelRenderer getArm();
-	
-	public abstract ModelRenderer getNeck();
+    public abstract ModelRenderer getArm();
+
+    public abstract ModelRenderer getNeck();
 }

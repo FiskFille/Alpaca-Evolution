@@ -132,20 +132,20 @@ public class ModelAlpaca extends ModelAlpacaBase
         body.addChild(backUpperLeg2);
         body.addChild(frontUpperLeg1);
     }
-    
+
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-    	setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         body.render(f5);
     }
-    
+
     public void setRotateAngle(FiskModelRenderer FiskModelRenderer, float x, float y, float z)
     {
         FiskModelRenderer.rotateAngleX = x;
         FiskModelRenderer.rotateAngleY = y;
         FiskModelRenderer.rotateAngleZ = z;
     }
-    
+
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
     {
         neck.setRotationPoint(0.0F, -5.5F, -5.0F);
@@ -173,48 +173,48 @@ public class ModelAlpaca extends ModelAlpacaBase
         backUpperLeg2.setRotationPoint(2.2F, -1.0F, 4.0F);
         body.setRotationPoint(0.0F, 16.0F, 0.0F);
         frontUpperLeg1.setRotationPoint(-2.2F, -1.0F, -4.0F);
-    	
-    	float f6 = (180F / (float)Math.PI);
-        neck.rotateAngleX = f4 / (180F / (float)Math.PI);
-        neck.rotateAngleY = f3 / (180F / (float)Math.PI);
-        body.rotateAngleX = ((float)Math.PI / 2F);
+
+        float f6 = (180F / (float) Math.PI);
+        neck.rotateAngleX = f4 / (180F / (float) Math.PI);
+        neck.rotateAngleY = f3 / (180F / (float) Math.PI);
+        body.rotateAngleX = ((float) Math.PI / 2F);
         frontUpperLeg1.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        frontUpperLeg2.rotateAngleX = MathHelper.cos(f * 0.6662F + (float)Math.PI) * 1.4F * f1;
-        backUpperLeg1.rotateAngleX = MathHelper.cos(f * 0.6662F + (float)Math.PI) * 1.4F * f1;
+        frontUpperLeg2.rotateAngleX = MathHelper.cos(f * 0.6662F + (float) Math.PI) * 1.4F * f1;
+        backUpperLeg1.rotateAngleX = MathHelper.cos(f * 0.6662F + (float) Math.PI) * 1.4F * f1;
         backUpperLeg2.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        
+
         float f7;
-        
+
         if (onGround > 0)
         {
-        	f6 = onGround;
+            f6 = onGround;
             f6 = 1.0F - onGround;
             f6 *= f6;
             f6 *= f6;
             f6 = 1.0F - f6;
-            f7 = MathHelper.sin(f6 * (float)Math.PI);
-            float f8 = MathHelper.sin(onGround * (float)Math.PI) * -(bipedHead.rotateAngleX - 0.7F) * 0.75F;
-            neck.rotateAngleX = (float)((double)f7 * 1.2D + (double)f8) * 1.5F;
+            f7 = MathHelper.sin(f6 * (float) Math.PI);
+            float f8 = MathHelper.sin(onGround * (float) Math.PI) * -(bipedHead.rotateAngleX - 0.7F) * 0.75F;
+            neck.rotateAngleX = (float) ((double) f7 * 1.2D + (double) f8) * 1.5F;
         }
-        
+
         if (isSneak)
         {
-        	float amount = -1.25F;
-        	frontUpperLeg1.rotationPointY += amount;
-        	frontUpperLeg2.rotationPointY += amount;
-        	backUpperLeg1.rotationPointY += amount;
-        	backUpperLeg2.rotationPointY += amount;
-        	neck.rotationPointY -= amount;
+            float amount = -1.25F;
+            frontUpperLeg1.rotationPointY += amount;
+            frontUpperLeg2.rotationPointY += amount;
+            backUpperLeg1.rotationPointY += amount;
+            backUpperLeg2.rotationPointY += amount;
+            neck.rotationPointY -= amount;
         }
     }
-    
+
     public ModelRenderer getArm()
     {
-    	return frontUpperLeg1;
+        return frontUpperLeg1;
     }
-    
+
     public ModelRenderer getNeck()
     {
-    	return neck;
+        return neck;
     }
 }
