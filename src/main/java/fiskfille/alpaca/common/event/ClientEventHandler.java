@@ -345,7 +345,7 @@ public class ClientEventHandler
 
                 if (player.getCommandSenderName().equals("deadmau5") && hasSkin)
                 {
-                    renderManager.renderEngine.bindTexture(player.getLocationSkin());
+                    renderManager.renderEngine.bindTexture(player.getLocationCape());
 
                     for (int j = 0; j < 2; ++j)
                     {
