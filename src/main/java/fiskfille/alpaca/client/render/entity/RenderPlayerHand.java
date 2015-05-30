@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import fiskfille.alpaca.Alpaca;
 import fiskfille.alpaca.common.color.ColorHelper;
 import fiskfille.alpaca.common.data.AlpacaModelManager;
 
@@ -56,10 +57,10 @@ public class RenderPlayerHand extends RenderPlayer
 
             String texture = AlpacaModelManager.getTexture(player);
             
-            textureManager.bindTexture(new ResourceLocation("textures/entity/alpaca/" + texture + ".png"));
+            textureManager.bindTexture(new ResourceLocation(Alpaca.modid, "textures/entity/alpaca/" + texture + ".png"));
             biped.bipedRightArm.render(0.0625F);
 
-            textureManager.bindTexture(new ResourceLocation("textures/entity/alpaca/" + texture + "_overlay.png"));
+            textureManager.bindTexture(new ResourceLocation(Alpaca.modid, "textures/entity/alpaca/" + texture + "_overlay.png"));
 
             ColorHelper.setColorFromInt(ColorHelper.getAlpacaColor(player), 1.0F);
             biped.bipedRightArm.render(0.0625F);
