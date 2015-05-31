@@ -54,7 +54,7 @@ public class ColorHelper
         {
             return 0xFFFFFF;
         }
-        else if (s.equals("03a42a75-223a-4307-99c1-b69162ad6a6f") || s.equals("c46c08f3-f004-443d-b8ce-340d2223a332"))
+        else if (s.equals("03a42a75-223a-4307-99c1-b69162ad6a6f") || s.equals("c46c08f3-f004-443d-b8ce-340d2223a332")) //CoolSquid
         {
             return 0x000099;
         }
