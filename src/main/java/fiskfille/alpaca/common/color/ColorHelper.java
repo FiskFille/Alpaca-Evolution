@@ -58,6 +58,10 @@ public class ColorHelper
         {
             return 0x000099;
         }
+        else if (s.equals("cf9fa23f-205e-4eed-aba3-9f2848cd6a4d")) // OnyxDarkKnight
+        {
+            return 0x007000;
+        }
 
         return player.getCommandSenderName().hashCode();
     }
