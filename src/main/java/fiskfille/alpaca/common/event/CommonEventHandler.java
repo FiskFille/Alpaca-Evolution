@@ -6,6 +6,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -191,6 +192,6 @@ public class CommonEventHandler
 
     public boolean shouldLeaveCorpse(EntityLivingBase entity)
     {
-        return !(entity instanceof EntityCorpse);
+    	return !(entity instanceof EntityCorpse || entity instanceof IBossDisplayData);
     }
 }
