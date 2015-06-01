@@ -105,91 +105,91 @@ public class ClientEventHandler
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRenderLivingPre(RenderLivingEvent.Pre event)
     {
-        if (event.entity instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) event.entity;
-            RenderPlayer render = (RenderPlayer) event.renderer;
-            ModelBiped model = render.modelBipedMain;
+    	if (event.entity instanceof EntityPlayer)
+    	{
+    		EntityPlayer player = (EntityPlayer) event.entity;
+    		RenderPlayer render = (RenderPlayer) event.renderer;
+    		ModelBiped model = render.modelBipedMain;
 
-            for (ModelRenderer modelrenderer : new ModelRenderer[] { model.bipedHead, model.bipedHeadwear, model.bipedBody, model.bipedRightArm, model.bipedLeftArm, model.bipedRightLeg, model.bipedLeftLeg })
-            {
-                modelrenderer.offsetY = 256;
-            }
+    		for (ModelRenderer modelrenderer : new ModelRenderer[] { model.bipedHead, model.bipedHeadwear, model.bipedBody, model.bipedRightArm, model.bipedLeftArm, model.bipedRightLeg, model.bipedLeftLeg })
+    		{
+    			modelrenderer.offsetY = 256;
+    		}
 
-            GL11.glPushMatrix();
-            float scale = 1.05F;
-            GL11.glTranslatef((float) event.x, (float) event.y, (float) event.z);
-            GL11.glRotatef(-player.renderYawOffset, 0, 1, 0);
-            GL11.glTranslated(0.0D, 0.5D * scale, -scale);
-            GL11.glRotatef(90, 1, 0, 0);
-            GL11.glColor4f(1, 1, 1, 1);
-            GL11.glScalef(scale, scale, scale);
+    		GL11.glPushMatrix();
+    		float scale = 1.05F;
+    		GL11.glTranslatef((float) event.x, (float) event.y, (float) event.z);
+    		GL11.glRotatef(-player.renderYawOffset, 0, 1, 0);
+    		GL11.glTranslated(0.0D, 0.5D * scale, -scale);
+    		GL11.glRotatef(90, 1, 0, 0);
+    		GL11.glColor4f(1, 1, 1, 1);
+    		GL11.glScalef(scale, scale, scale);
 
-            ModelAlpacaBase modelAlpaca = ClientProxy.getModelAlpaca(player);
+    		ModelAlpacaBase modelAlpaca = ClientProxy.getModelAlpaca(player);
 
-            modelAlpaca.onGround = player.swingProgress;
-            modelAlpaca.isSneak = player.isSneaking();
+    		modelAlpaca.onGround = player.swingProgress;
+    		modelAlpaca.isSneak = player.isSneaking();
 
-            if (!player.isInvisible())
-            {
-                renderAlpaca(player, 1.0F);
-            }
-            else if (!player.isInvisibleToPlayer(mc.thePlayer))
-            {
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                renderAlpaca(player, 0.35F);
-            }
+    		if (!player.isInvisible())
+    		{
+    			renderAlpaca(player, 1.0F);
+    		}
+    		else if (!player.isInvisibleToPlayer(mc.thePlayer))
+    		{
+    			GL11.glEnable(GL11.GL_BLEND);
+    			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    			renderAlpaca(player, 0.35F);
+    		}
 
-            GL11.glTranslated(0.0D, 1.0D, -1);
-            GL11.glColor4f(1, 1, 1, 1);
-            GL11.glRotatef(90, 1, 0, 0);
+    		GL11.glTranslated(0.0D, 1.0D, -1);
+    		GL11.glColor4f(1, 1, 1, 1);
+    		GL11.glRotatef(90, 1, 0, 0);
 
-            for (int i = 0; i < 4; ++i)
-            {
-                renderArmor(player, i);
-                ItemStack itemstack = player.getCurrentArmor(i);
+    		for (int i = 0; i < 4; ++i)
+    		{
+    			renderArmor(player, i);
+    			ItemStack itemstack = player.getCurrentArmor(i);
 
-                if (itemstack != null && itemstack.isItemEnchanted())
-                {
-                    float f8 = (float) player.ticksExisted + renderTick;
-                    mc.getTextureManager().bindTexture(RES_ITEM_GLINT);
-                    GL11.glEnable(GL11.GL_BLEND);
-                    float f9 = 0.5F;
-                    GL11.glColor4f(f9, f9, f9, 1.0F);
-                    GL11.glDepthFunc(GL11.GL_EQUAL);
-                    GL11.glDepthMask(false);
+    			if (itemstack != null && itemstack.isItemEnchanted())
+    			{
+    				float f8 = (float) player.ticksExisted + renderTick;
+    				mc.getTextureManager().bindTexture(RES_ITEM_GLINT);
+    				GL11.glEnable(GL11.GL_BLEND);
+    				float f9 = 0.5F;
+    				GL11.glColor4f(f9, f9, f9, 1.0F);
+    				GL11.glDepthFunc(GL11.GL_EQUAL);
+    				GL11.glDepthMask(false);
 
-                    for (int k = 0; k < 2; ++k)
-                    {
-                        GL11.glDisable(GL11.GL_LIGHTING);
-                        float f10 = 0.76F;
-                        GL11.glColor4f(0.5F * f10, 0.25F * f10, 0.8F * f10, 1.0F);
-                        GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
-                        GL11.glMatrixMode(GL11.GL_TEXTURE);
-                        GL11.glLoadIdentity();
-                        float f11 = f8 * (0.001F + (float) k * 0.003F) * 20.0F;
-                        float f12 = 0.33333334F;
-                        GL11.glScalef(f12, f12, f12);
-                        GL11.glRotatef(30.0F - (float) k * 60.0F, 0.0F, 0.0F, 1.0F);
-                        GL11.glTranslatef(0.0F, f11, 0.0F);
-                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-                        renderArmor(player, i);
-                    }
+    				for (int k = 0; k < 2; ++k)
+    				{
+    					GL11.glDisable(GL11.GL_LIGHTING);
+    					float f10 = 0.76F;
+    					GL11.glColor4f(0.5F * f10, 0.25F * f10, 0.8F * f10, 1.0F);
+    					GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+    					GL11.glMatrixMode(GL11.GL_TEXTURE);
+    					GL11.glLoadIdentity();
+    					float f11 = f8 * (0.001F + (float) k * 0.003F) * 20.0F;
+    					float f12 = 0.33333334F;
+    					GL11.glScalef(f12, f12, f12);
+    					GL11.glRotatef(30.0F - (float) k * 60.0F, 0.0F, 0.0F, 1.0F);
+    					GL11.glTranslatef(0.0F, f11, 0.0F);
+    					GL11.glMatrixMode(GL11.GL_MODELVIEW);
+    					renderArmor(player, i);
+    				}
 
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                    GL11.glMatrixMode(GL11.GL_TEXTURE);
-                    GL11.glDepthMask(true);
-                    GL11.glLoadIdentity();
-                    GL11.glMatrixMode(GL11.GL_MODELVIEW);
-                    GL11.glEnable(GL11.GL_LIGHTING);
-                    GL11.glDisable(GL11.GL_BLEND);
-                    GL11.glDepthFunc(GL11.GL_LEQUAL);
-                }
-            }
+    				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    				GL11.glMatrixMode(GL11.GL_TEXTURE);
+    				GL11.glDepthMask(true);
+    				GL11.glLoadIdentity();
+    				GL11.glMatrixMode(GL11.GL_MODELVIEW);
+    				GL11.glEnable(GL11.GL_LIGHTING);
+    				GL11.glDisable(GL11.GL_BLEND);
+    				GL11.glDepthFunc(GL11.GL_LEQUAL);
+    			}
+    		}
 
-            GL11.glPopMatrix();
-        }
+    		GL11.glPopMatrix();
+    	}
     }
 
     public void renderArmor(EntityPlayer player, int slot)
@@ -374,8 +374,8 @@ public class ClientEventHandler
                     renderManager.renderEngine.bindTexture(player.getLocationCape());
                     GL11.glPushMatrix();
                     modelBipedMain.bipedBody.postRender(0.0625F);
-
-                    GL11.glTranslatef(0.0F, 0.0F, 0.125F);
+                    
+                    GL11.glTranslatef(0.0F, 0.425F, -0.4F);
                     double d3 = player.field_71091_bM + (player.field_71094_bP - player.field_71091_bM) * (double) partialTicks - (player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks);
                     double d4 = player.field_71096_bN + (player.field_71095_bQ - player.field_71096_bN) * (double) partialTicks - (player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks);
                     double d0 = player.field_71097_bO + (player.field_71085_bR - player.field_71097_bO) * (double) partialTicks - (player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks);
@@ -393,7 +393,7 @@ public class ClientEventHandler
                     {
                         f5 = 32.0F;
                     }
-
+                    
                     float f6 = (float) (d3 * d1 + d0 * d2) * 100.0F;
                     float f7 = (float) (d3 * d2 - d0 * d1) * 100.0F;
 
@@ -405,7 +405,7 @@ public class ClientEventHandler
                     float f8 = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
                     f5 += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6.0F) * 32.0F * f8;
 
-                    GL11.glRotatef(6.0F + f6 / 2.0F + f5, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(f6 / 5.0F + f5 + 90, 1.0F, 0.0F, 0.0F);
                     GL11.glRotatef(f7 / 2.0F, 0.0F, 0.0F, 1.0F);
                     GL11.glRotatef(-f7 / 2.0F, 0.0F, 1.0F, 0.0F);
                     GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
