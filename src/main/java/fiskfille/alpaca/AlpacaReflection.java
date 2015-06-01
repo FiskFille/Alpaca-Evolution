@@ -1,44 +1,42 @@
 package fiskfille.alpaca;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AlpacaReflection
 {
     public static Method renderHandMethod;
-    public static Field textureOffsetXField;
-    public static Field textureOffsetYField;
+    public static Method renderEquippedItemsMethod;
+    public static Method getColorMultiplierMethod;
 
     @SideOnly(Side.CLIENT)
     public static void client()
     {
-        for (Method method : EntityRenderer.class.getDeclaredMethods())
+        renderHandMethod = getMethod(EntityRenderer.class, "renderHand", "func_78476_b");
+        renderEquippedItemsMethod = getMethod(RendererLivingEntity.class, "renderEquippedItems");
+        getColorMultiplierMethod = getMethod(RendererLivingEntity.class, "getColorMultiplier", "func_77030_a");
+    }
+    
+    public static Method getMethod(Class clazz, String... names)
+    {
+    	for (Method method : clazz.getDeclaredMethods())
         {
-            if (method.getName().equals("renderHand") || method.getName().equals("func_78476_b"))
-            {
-                method.setAccessible(true);
-                renderHandMethod = method;
-            }
+    		for (String name : names)
+    		{
+    			if (method.getName().equals(name))
+                {
+                	method.setAccessible(true);
+                	return method;
+                }
+    		}
         }
-
-        for (Field field : ModelRenderer.class.getFields())
-        {
-            if (field.getName().equals("textureOffsetX") || field.getName().equals("field_78803_o"))
-            {
-                field.setAccessible(true);
-                textureOffsetXField = field;
-            }
-            else if (field.getName().equals("textureOffsetY") || field.getName().equals("field_78813_p"))
-            {
-                field.setAccessible(true);
-                textureOffsetYField = field;
-            }
-        }
+    	
+    	return null;
     }
 
     public static void common()
@@ -46,43 +44,41 @@ public class AlpacaReflection
 
     }
 
-    public static void renderHand(EntityRenderer entityRenderer, float f, int i)
+    public static void renderHand(EntityRenderer obj, float f, int i)
     {
         try
         {
-            renderHandMethod.invoke(entityRenderer, f, i);
+            renderHandMethod.invoke(obj, f, i);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-
-    public static int getTextureOffsetX(ModelRenderer modelrenderer)
+    
+    public static void renderEquippedItems(RendererLivingEntity obj, EntityPlayer player, float f)
     {
         try
         {
-            return textureOffsetXField.getInt(modelrenderer);
+        	renderEquippedItemsMethod.invoke(obj, player, f);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
-        return 0;
     }
-
-    public static int getTextureOffsetY(ModelRenderer modelrenderer)
+    
+    public static int getColorMultiplier(RendererLivingEntity obj, EntityPlayer player, float f, float f1)
     {
         try
         {
-            return textureOffsetYField.getInt(modelrenderer);
+        	return (Integer)getColorMultiplierMethod.invoke(obj, player, f, f1);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
+        
         return 0;
     }
 }
