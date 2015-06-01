@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
 import fiskfille.alpaca.Alpaca;
+import fiskfille.alpaca.common.data.AlpacaModelManager;
 
 public class ColorHelper
 {
@@ -22,7 +23,8 @@ public class ColorHelper
     public static int getAlpacaColor(EntityPlayer player)
     {
         String s = player.getUniqueID().toString();
-
+        AlpacaModelManager.initAlpacaSkins();
+        
         if (s.equals("853c80ef-3c37-49fd-aa49-938b674adae6")) // Jeb
         {
             int k = player.ticksExisted / 25 + player.getEntityId();
@@ -50,13 +52,17 @@ public class ColorHelper
         {
             return 0xF261BF;
         }
-        else if (s.equals("c3ed4d52-fb4f-4964-ba1b-9cda2453741e")) // The Alien
-        {
-            return 0xFFFFFF;
-        }
         else if (s.equals("03a42a75-223a-4307-99c1-b69162ad6a6f") || s.equals("c46c08f3-f004-443d-b8ce-340d2223a332")) //CoolSquid
         {
             return 0x000099;
+        }
+        else if (s.equals("cf9fa23f-205e-4eed-aba3-9f2848cd6a4d")) // OnyxDarkKnight
+        {
+        	return 0x007000;
+        }
+        else if (AlpacaModelManager.alpacaSkins.containsKey(s))
+        {
+        	return 0xFFFFFF;
         }
 
         return player.getCommandSenderName().hashCode();
