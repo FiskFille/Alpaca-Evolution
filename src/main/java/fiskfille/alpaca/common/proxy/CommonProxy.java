@@ -7,6 +7,7 @@ import fiskfille.alpaca.AlpacaReflection;
 import fiskfille.alpaca.common.entity.AlpacaEntities;
 import fiskfille.alpaca.common.event.ClientEventHandler;
 import fiskfille.alpaca.common.event.CommonEventHandler;
+import fiskfille.alpaca.common.potion.AlpacaPotions;
 
 public class CommonProxy
 {
@@ -16,6 +17,7 @@ public class CommonProxy
     {
         AlpacaReflection.common();
         AlpacaEntities.load();
+        AlpacaPotions.load();
 
         registerEventHandler(new CommonEventHandler());
     }

@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import fiskfille.alpaca.Alpaca;
 import fiskfille.alpaca.common.color.ColorHelper;
-import fiskfille.alpaca.common.data.AlpacaModelManager;
+import fiskfille.alpaca.common.data.AlpacaSkins;
 
 public class RenderPlayerHand extends RenderPlayer
 {
@@ -54,14 +54,11 @@ public class RenderPlayerHand extends RenderPlayer
             biped.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
 
             TextureManager textureManager = mc.getTextureManager();
-
-            String texture = AlpacaModelManager.getTexture(player);
             
-            textureManager.bindTexture(new ResourceLocation(Alpaca.modid, "textures/entity/alpaca/" + texture + ".png"));
+            textureManager.bindTexture(AlpacaSkins.getTexture(player));
             biped.bipedRightArm.render(0.0625F);
 
-            textureManager.bindTexture(new ResourceLocation(Alpaca.modid, "textures/entity/alpaca/" + texture + "_overlay.png"));
-
+            textureManager.bindTexture(AlpacaSkins.getTextureOverlay(player));
             ColorHelper.setColorFromInt(ColorHelper.getAlpacaColor(player), 1.0F);
             biped.bipedRightArm.render(0.0625F);
             biped.bipedRightArm = arm;

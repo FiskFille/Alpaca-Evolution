@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
 import fiskfille.alpaca.Alpaca;
-import fiskfille.alpaca.common.data.AlpacaModelManager;
+import fiskfille.alpaca.common.data.AlpacaSkins;
 
 public class ColorHelper
 {
@@ -23,9 +23,9 @@ public class ColorHelper
     public static int getAlpacaColor(EntityPlayer player)
     {
         String s = player.getUniqueID().toString();
-        AlpacaModelManager.initAlpacaSkins();
+        AlpacaSkins.initAlpacaSkins();
         
-        if (s.equals("853c80ef-3c37-49fd-aa49-938b674adae6")) // Jeb
+        if (s.equals("853c80ef-3c37-49fd-aa49-938b674adae6") || player.getCommandSenderName().toLowerCase().contains("jeb")) // Jeb
         {
             int k = player.ticksExisted / 25 + player.getEntityId();
             int l = k % EntitySheep.fleeceColorTable.length;
@@ -60,7 +60,7 @@ public class ColorHelper
         {
         	return 0x007000;
         }
-        else if (AlpacaModelManager.alpacaSkins.containsKey(s))
+        else if (AlpacaSkins.alpacaSkins.containsKey(s))
         {
         	return 0xFFFFFF;
         }

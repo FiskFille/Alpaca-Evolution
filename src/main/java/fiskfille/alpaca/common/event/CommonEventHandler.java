@@ -23,6 +23,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import fiskfille.alpaca.common.data.AlpacaModels;
 import fiskfille.alpaca.common.data.DataManager;
 import fiskfille.alpaca.common.entity.EntityCorpse;
 import fiskfille.alpaca.common.packet.PacketManager;
@@ -36,7 +37,7 @@ public class CommonEventHandler
         EntityPlayer player = event.entityPlayer;
         Entity target = event.target;
 
-        if (target != null && target.isEntityAlive() && target instanceof EntityCorpse)
+        if (AlpacaModels.isAlpaca(player) && target != null && target.isEntityAlive() && target instanceof EntityCorpse)
         {
             event.setCanceled(true);
             target.setDead();
@@ -72,7 +73,7 @@ public class CommonEventHandler
     {
         EntityLivingBase entity = event.entityLiving;
 
-        if (entity != null && entity.worldObj != null && shouldLeaveCorpse(entity))
+        if (entity != null && entity.worldObj != null && shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaModels.isAlpaca((EntityPlayer)event.source.getEntity()))
         {
             World world = entity.worldObj;
             EntityCorpse corpse = new EntityCorpse(world);
@@ -99,7 +100,7 @@ public class CommonEventHandler
     {
         EntityLivingBase entity = event.entityLiving;
 
-        if (shouldLeaveCorpse(entity))
+        if (shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaModels.isAlpaca((EntityPlayer)event.source.getEntity()))
         {
             entity.setLocationAndAngles(0, 0, 0, 0, 0);
         }
@@ -108,7 +109,7 @@ public class CommonEventHandler
     @SubscribeEvent
     public void onUseItem(PlayerUseItemEvent.Finish event)
     {
-        if (event.item.getItem() instanceof ItemFood)
+        if (AlpacaModels.isAlpaca(event.entityPlayer) && event.item.getItem() instanceof ItemFood)
         {
             ItemFood item = (ItemFood) event.item.getItem();
             FoodStats food = event.entityPlayer.getFoodStats();
@@ -118,77 +119,7 @@ public class CommonEventHandler
 
     @SubscribeEvent
     public void onArrowLoose(ArrowLooseEvent event)
-    {
-        event.setCanceled(true);
-        EntityPlayer player = event.entityPlayer;
-        World world = player.worldObj;
-        ItemStack itemstack = event.bow;
-        Random itemRand = new Random();
-
-        int j = event.charge;
-        boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
-
-        if (flag || player.inventory.hasItem(Items.arrow))
-        {
-            float f = (float) j / 20.0F;
-            f = (f * f + f * 2.0F) / 3.0F;
-
-            if ((double) f < 0.1D)
-            {
-                return;
-            }
-
-            if (f > 1.0F)
-            {
-                f = 1.0F;
-            }
-
-            EntityArrow entityarrow = new EntityArrow(world, player, f * 2.0F);
-
-            if (f == 1.0F)
-            {
-                entityarrow.setIsCritical(true);
-            }
-
-            int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, itemstack);
-
-            if (k > 0)
-            {
-                entityarrow.setDamage(entityarrow.getDamage() + (double) k * 0.5D + 0.5D);
-            }
-
-            int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, itemstack);
-
-            if (l > 0)
-            {
-                entityarrow.setKnockbackStrength(l);
-            }
-
-            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, itemstack) > 0)
-            {
-                entityarrow.setFire(100);
-            }
-
-            itemstack.damageItem(1, player);
-            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-
-            if (flag)
-            {
-                entityarrow.canBePickedUp = 2;
-            }
-            else
-            {
-                player.inventory.consumeInventoryItem(Items.arrow);
-            }
-
-            entityarrow.posY -= 0.5F;
-
-            if (!world.isRemote)
-            {
-                world.spawnEntityInWorld(entityarrow);
-            }
-        }
-    }
+    {}
 
     public boolean shouldLeaveCorpse(EntityLivingBase entity)
     {
