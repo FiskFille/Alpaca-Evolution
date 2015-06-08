@@ -30,7 +30,7 @@ public class ItemFace extends Item
         	player.addPotionEffect(new PotionEffect(AlpacaPotions.potionAlpaca.id, 20 * seconds + 20 * 60 * minutes, 0));
         }
 
-        return itemstack.stackSize <= 0 ? new ItemStack(AlpacaItems.face) : itemstack;
+        return itemstack;
     }
     
     public int getMaxItemUseDuration(ItemStack itemstack)

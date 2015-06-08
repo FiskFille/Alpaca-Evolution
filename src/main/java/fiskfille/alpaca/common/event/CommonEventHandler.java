@@ -1,5 +1,8 @@
 package fiskfille.alpaca.common.event;
 
+import java.util.List;
+
+import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
@@ -9,11 +12,17 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -94,7 +103,7 @@ public class CommonEventHandler
     {
         EntityLivingBase entity = event.entityLiving;
         
-        if (entity instanceof EntityVillager)
+        if (entity instanceof EntityVillager || entity instanceof EntityPlayer)
         {
         	event.drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, new ItemStack(AlpacaItems.face)));
         }
@@ -124,26 +133,100 @@ public class CommonEventHandler
     	
     	if (player.ticksExisted % 2 == 0)
     	{
-    		// TODO: Wall-jumping
-    		
         	if (player.isSprinting())
         	{
         		DataManager.setMomentum(player, ++momentum);
-        		
-        		if (player.isCollidedHorizontally)
-        		{
-//        			player.motionY += 1;
-//        			player.rotationPitch = -70;
-        		}
         	}
         	else 
         	{
         		DataManager.setMomentum(player, 0);
         	}
         	
-//        	System.out.println(momentum + "");
+        	if (!AlpacaModels.isAlpaca(player))
+        	{
+        		DataManager.setMomentum(player, 0);
+        		player.stepHeight = 0.5F;
+        	}
+        	else
+        	{
+        		player.stepHeight = 1.0F;
+        	}
     	}
     }
+    
+    @SubscribeEvent
+    public void onLivingJump(LivingJumpEvent event)
+    {
+    	if (event.entity instanceof EntityPlayer)
+    	{
+    		EntityPlayer player = (EntityPlayer)event.entity;
+    		
+    		float f = (float)DataManager.getMomentum(player) / 200;
+    		f = Math.min(f, 0.5F);
+    		player.motionY += f;
+    		DataManager.setMomentum(player, 0);
+    	}
+    }
+    
+    @SubscribeEvent
+    public void onLivingFall(LivingFallEvent event)
+    {
+    	if (event.entity instanceof EntityPlayer)
+    	{
+    		EntityPlayer player = (EntityPlayer)event.entity;
+    		event.distance /= 1.75F;
+    	}
+    }
+    
+    @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event)
+    {
+    	if (event.source.getEntity() instanceof EntityPlayer)
+    	{
+    		EntityPlayer player = (EntityPlayer)event.source.getEntity();
+    		EntityLivingBase entity = event.entityLiving;
+    		
+    		Vec3 frontCoords = getFrontCoords(entity, player, (float)DataManager.getMomentum(player) / 40, true);
+			entity.motionX = (frontCoords.xCoord - entity.posX);
+			entity.motionY = (frontCoords.yCoord - entity.posY);
+			entity.motionZ = (frontCoords.zCoord - entity.posZ);
+			event.ammount += (float)DataManager.getMomentum(player) / 20;
+			
+			DataManager.setMomentum(player, 0);
+			player.swingItem();
+    	}
+    }
+    
+    public static List<EntityLivingBase> getEntitiesNear(World world, double x, double y, double z, float radius)
+	{
+		List<EntityLivingBase> list = world.selectEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius), IEntitySelector.selectAnything);
+		return list;
+	}
+
+	public static Vec3 getFrontCoords(EntityLivingBase living, EntityPlayer player, double amount, boolean pitch)
+	{
+		float f = 1.0F;
+		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
+		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
+
+		if (!pitch)
+		{
+			f1 = 0;
+		}
+
+		double d0 = living.prevPosX + (living.posX - living.prevPosX) * (double)f;
+		double d1 = living.prevPosY + (living.posY - living.prevPosY) * (double)f;
+		double d2 = living.prevPosZ + (living.posZ - living.prevPosZ) * (double)f;
+		Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
+		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float)Math.PI);
+		float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
+		float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+		float f6 = MathHelper.sin(-f1 * 0.017453292F);
+		float f7 = f4 * f5;
+		float f8 = f3 * f5;
+		Vec3 vec31 = vec3.addVector(f7 * amount, f6 * amount, f8 * amount);
+		return vec31;
+	}
 
     public static boolean shouldLeaveCorpse(EntityLivingBase entity)
     {

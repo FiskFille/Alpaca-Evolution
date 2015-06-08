@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import fiskfille.alpaca.AlpacaReflection;
 import fiskfille.alpaca.client.file.ModOptions;
+import fiskfille.alpaca.client.gui.GuiOverlay;
 import fiskfille.alpaca.client.keybinds.AlpacaKeyBinds;
 import fiskfille.alpaca.client.model.entity.ModelAlpaca;
 import fiskfille.alpaca.client.model.entity.ModelAlpacaArmor;
@@ -28,6 +29,7 @@ public class ClientProxy extends CommonProxy
 
         clientEventHandler = new ClientEventHandler();
         registerEventHandler(clientEventHandler);
+        registerEventHandler(new GuiOverlay(Minecraft.getMinecraft()));
         
         
         RenderingRegistry.registerEntityRenderingHandler(EntityCorpse.class, new RenderCorpse());
