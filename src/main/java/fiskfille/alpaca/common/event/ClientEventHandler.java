@@ -113,7 +113,7 @@ public class ClientEventHandler
 			GL11.glPopMatrix();
 		}
 		
-		if (!AlpacaModels.isAlpacaClient(player))
+		if (!AlpacaModels.isAlpacaClient(player) && render != null)
 		{
 			ModelBiped model = render.modelBipedMain;
 			
