@@ -1,5 +1,6 @@
 package fiskfille.alpaca.common.event;
 
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
@@ -27,21 +29,25 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
+import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import fiskfille.alpaca.Alpaca;
 import fiskfille.alpaca.AlpacaReflection;
 import fiskfille.alpaca.client.gui.GuiModOptions;
@@ -52,6 +58,9 @@ import fiskfille.alpaca.client.render.entity.RenderPlayerHand;
 import fiskfille.alpaca.common.color.ColorHelper;
 import fiskfille.alpaca.common.data.AlpacaModels;
 import fiskfille.alpaca.common.data.AlpacaSkins;
+import fiskfille.alpaca.common.entity.EntityTongue;
+import fiskfille.alpaca.common.packet.PacketKeyInput;
+import fiskfille.alpaca.common.packet.PacketManager;
 import fiskfille.alpaca.common.proxy.ClientProxy;
 
 public class ClientEventHandler
@@ -114,13 +123,10 @@ public class ClientEventHandler
 			RenderPlayer render = (RenderPlayer) event.renderer;
 			ModelBiped model = render.modelBipedMain;
 
-			for (ModelRenderer modelrenderer : new ModelRenderer[] { model.bipedHead, model.bipedHeadwear, model.bipedBody, model.bipedRightArm, model.bipedLeftArm, model.bipedRightLeg, model.bipedLeftLeg })
-			{
-				modelrenderer.offsetY = AlpacaModels.isAlpacaClient(player) ? 256 : 0;
-			}
-
 			if (AlpacaModels.isAlpacaClient(player))
 			{
+				event.setCanceled(true);
+				
 				GL11.glPushMatrix();
 				float scale = 1.05F;
 				GL11.glTranslatef((float) event.x, (float) event.y, (float) event.z);
@@ -598,11 +604,58 @@ public class ClientEventHandler
     public void onKeyInput(KeyInputEvent event)
     {
         EntityPlayer player = mc.thePlayer;
+        World world = player.worldObj;
         ItemStack itemstack = player.getHeldItem();
         
         if (AlpacaKeyBinds.keyBindingOptions.getIsKeyPressed() && mc.currentScreen == null)
         {
         	mc.displayGuiScreen(new GuiModOptions());
         }
+        
+        if (AlpacaKeyBinds.keyBindingLick.getIsKeyPressed() && mc.currentScreen == null && AlpacaModels.isAlpaca(player))
+        {
+        	int key = AlpacaKeyBinds.keyBindingLick.getKeyCode();
+        	PacketManager.networkWrapper.sendToServer(new PacketKeyInput(key));
+    		PacketManager.networkWrapper.sendToAllAround(new PacketKeyInput(key), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 32));
+        }
+    }
+	
+	@SubscribeEvent
+    public void onItemRightClick(PlayerInteractEvent event)
+    {
+    	EntityPlayer player = event.entityPlayer;
+    	World world = player.worldObj;
+    	
+    }
+    
+    public static List<EntityTongue> getToungeEntities(EntityPlayer player)
+    {
+    	List<EntityTongue> list = Lists.newArrayList();
+    	
+    	for (Entity entity : (List<Entity>)player.worldObj.loadedEntityList)
+    	{
+    		if (entity instanceof EntityTongue)
+    		{
+    			EntityTongue entitytounge = (EntityTongue)entity;
+    			
+    			if (entitytounge.player != null && entitytounge.player.getUniqueID().toString().equals(player.getUniqueID().toString()))
+    			{
+    				list.add(entitytounge);
+    			}
+    		}
+    	}
+    	
+    	return list;
+    }
+    
+    public static void killAllToungeEntitiesForPlayer(EntityPlayer player)
+    {
+    	List<EntityTongue> list = getToungeEntities(player);
+    	
+    	for (int i = 0; i < list.size(); ++i)
+    	{
+    		EntityTongue entitytounge = list.get(i);
+    		entitytounge.setDead();
+    	}
     }
 }

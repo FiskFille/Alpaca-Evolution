@@ -7,15 +7,15 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class DataManager
 {
-    public static Map<String, Integer> entitiesEaten = new HashMap<String, Integer>();
-
-    public static int getEntitiesEaten(EntityPlayer player)
+    public static Map<String, Integer> momentum = new HashMap<String, Integer>();
+    
+    public static int getMomentum(EntityPlayer player)
     {
-        return entitiesEaten.get(player.getUniqueID().toString()) == null ? 0 : entitiesEaten.get(player.getUniqueID().toString());
+        return momentum.get(player.getUniqueID().toString()) == null ? 0 : momentum.get(player.getUniqueID().toString());
     }
 
-    public static void setEntitiesEaten(EntityPlayer player, int i)
+    public static void setMomentum(EntityPlayer player, int i)
     {
-        entitiesEaten.put(player.getUniqueID().toString(), i);
+        momentum.put(player.getUniqueID().toString(), i);
     }
 }

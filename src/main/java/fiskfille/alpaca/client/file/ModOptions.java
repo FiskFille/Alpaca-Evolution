@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 public class ModOptions
 {
@@ -43,7 +44,7 @@ public class ModOptions
                 
                 if (astring[0].equals("force-render"))
                 {
-                	forceRender = Boolean.valueOf(forceRender);
+                	forceRender = Boolean.valueOf(astring[1]);
                 }
 			}
 		}

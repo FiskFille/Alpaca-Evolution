@@ -14,7 +14,7 @@ public class AlpacaPotions
 	{
 		extendPotionListLength();
 		
-		potionAlpaca = new PotionCustom(58, false, 0x23BFC2).setIconIndex(-1, -1).setPotionName("potion.alpaca");
+		potionAlpaca = new PotionCustom(58, false, 0x2223BFC2).setIconIndex(-1, -1).setPotionName("potion.alpaca");
 	}
 
 	private static void extendPotionListLength()

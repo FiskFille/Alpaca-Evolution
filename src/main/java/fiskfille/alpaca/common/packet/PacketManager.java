@@ -18,6 +18,8 @@ public class PacketManager
 
         registerPacket(PacketSetCorpseEntity.Handler.class, PacketSetCorpseEntity.class);
         registerPacket(PacketSyncXp.Handler.class, PacketSyncXp.class);
+        registerPacket(PacketLick.Handler.class, PacketLick.class);
+        registerPacket(PacketKeyInput.Handler.class, PacketKeyInput.class);
     }
 
     private static <REQ extends IMessage, REPLY extends IMessage> void registerPacket(Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType)

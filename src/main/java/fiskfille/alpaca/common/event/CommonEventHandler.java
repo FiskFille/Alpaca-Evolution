@@ -1,31 +1,31 @@
 package fiskfille.alpaca.common.event;
 
-import java.util.Random;
+import java.util.List;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import fiskfille.alpaca.common.data.AlpacaModels;
 import fiskfille.alpaca.common.data.DataManager;
 import fiskfille.alpaca.common.entity.EntityCorpse;
+import fiskfille.alpaca.common.entity.EntityTongue;
+import fiskfille.alpaca.common.packet.PacketLick;
 import fiskfille.alpaca.common.packet.PacketManager;
 import fiskfille.alpaca.common.packet.PacketSetCorpseEntity;
 
@@ -53,7 +53,6 @@ public class CommonEventHandler
 
             if (!corpse.worldObj.isRemote)
             {
-
                 i = 2;
 
                 while (i > 0)
@@ -63,8 +62,6 @@ public class CommonEventHandler
                     corpse.worldObj.spawnEntityInWorld(new EntityXPOrb(corpse.worldObj, corpse.posX, corpse.posY, corpse.posZ, j));
                 }
             }
-
-            DataManager.setEntitiesEaten(player, DataManager.getEntitiesEaten(player) + 1);
         }
     }
 
@@ -116,12 +113,37 @@ public class CommonEventHandler
             food.addStats(-item.func_150905_g(event.item), -item.func_150906_h(event.item));
         }
     }
-
+    
     @SubscribeEvent
-    public void onArrowLoose(ArrowLooseEvent event)
-    {}
+    public void onPlayerUpdate(PlayerTickEvent event)
+    {
+    	EntityPlayer player = event.player;
+    	int momentum = DataManager.getMomentum(player);
+    	
+    	if (player.ticksExisted % 2 == 0)
+    	{
+    		// TODO: Wall-jumping
+    		
+        	if (player.isSprinting())
+        	{
+        		DataManager.setMomentum(player, ++momentum);
+        		
+        		if (player.isCollidedHorizontally)
+        		{
+//        			player.motionY += 1;
+//        			player.rotationPitch = -70;
+        		}
+        	}
+        	else 
+        	{
+        		DataManager.setMomentum(player, 0);
+        	}
+        	
+//        	System.out.println(momentum + "");
+    	}
+    }
 
-    public boolean shouldLeaveCorpse(EntityLivingBase entity)
+    public static boolean shouldLeaveCorpse(EntityLivingBase entity)
     {
     	return !(entity instanceof EntityCorpse || entity instanceof IBossDisplayData);
     }
