@@ -20,15 +20,15 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import fiskfille.alpaca.common.data.AlpacaModels;
+import fiskfille.alpaca.AlpacaAPI;
 import fiskfille.alpaca.common.data.DataManager;
 import fiskfille.alpaca.common.entity.EntityCorpse;
 import fiskfille.alpaca.common.item.AlpacaItems;
@@ -43,7 +43,7 @@ public class CommonEventHandler
         EntityPlayer player = event.entityPlayer;
         Entity target = event.target;
 
-        if (AlpacaModels.isAlpaca(player) && target != null && target.isEntityAlive() && target instanceof EntityCorpse)
+        if (AlpacaAPI.isAlpaca(player) && target != null && target.isEntityAlive() && target instanceof EntityCorpse)
         {
             event.setCanceled(true);
             target.setDead();
@@ -76,7 +76,7 @@ public class CommonEventHandler
     {
         EntityLivingBase entity = event.entityLiving;
 
-        if (entity != null && entity.worldObj != null && shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaModels.isAlpaca((EntityPlayer)event.source.getEntity()))
+        if (entity != null && entity.worldObj != null && shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaAPI.isAlpaca((EntityPlayer)event.source.getEntity()))
         {
             World world = entity.worldObj;
             EntityCorpse corpse = new EntityCorpse(world);
@@ -108,7 +108,7 @@ public class CommonEventHandler
         	event.drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, new ItemStack(AlpacaItems.face)));
         }
         
-        if (shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaModels.isAlpaca((EntityPlayer)event.source.getEntity()))
+        if (shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaAPI.isAlpaca((EntityPlayer)event.source.getEntity()))
         {
             entity.setLocationAndAngles(0, 0, 0, 0, 0);
         }
@@ -117,7 +117,7 @@ public class CommonEventHandler
     @SubscribeEvent
     public void onUseItem(PlayerUseItemEvent.Finish event)
     {
-        if (AlpacaModels.isAlpaca(event.entityPlayer) && event.item.getItem() instanceof ItemFood)
+        if (AlpacaAPI.isAlpaca(event.entityPlayer) && event.item.getItem() instanceof ItemFood)
         {
             ItemFood item = (ItemFood) event.item.getItem();
             FoodStats food = event.entityPlayer.getFoodStats();
@@ -142,7 +142,7 @@ public class CommonEventHandler
         		DataManager.setMomentum(player, 0);
         	}
         	
-        	if (!AlpacaModels.isAlpaca(player))
+        	if (!AlpacaAPI.isAlpaca(player))
         	{
         		DataManager.setMomentum(player, 0);
         		player.stepHeight = 0.5F;

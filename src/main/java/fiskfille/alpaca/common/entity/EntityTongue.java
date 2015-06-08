@@ -8,7 +8,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import fiskfille.alpaca.common.data.AlpacaModels;
+import fiskfille.alpaca.AlpacaAPI;
 
 public class EntityTongue extends EntityThrowable
 {
@@ -58,7 +58,7 @@ public class EntityTongue extends EntityThrowable
         		grabbedEntity.fallDistance = 0;
         	}
         	
-        	if (!AlpacaModels.isAlpaca(player))
+        	if (!AlpacaAPI.isAlpaca(player))
         	{
         		setDead();
         	}
@@ -95,7 +95,10 @@ public class EntityTongue extends EntityThrowable
     
     protected void onImpact(MovingObjectPosition mop)
     {
-    	setVelocity(0, 0, 0);
+    	if (mop.entityHit == null)
+    	{
+    		setVelocity(0, 0, 0);
+    	}
     	
     	if (mop.entityHit != null && player != null && !mop.entityHit.getUniqueID().toString().equals(player.getUniqueID().toString()) && grabbedEntity == null)
     	{

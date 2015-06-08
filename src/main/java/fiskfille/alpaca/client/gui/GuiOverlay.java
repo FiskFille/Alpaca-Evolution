@@ -11,7 +11,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import fiskfille.alpaca.Alpaca;
-import fiskfille.alpaca.common.data.AlpacaModels;
+import fiskfille.alpaca.AlpacaAPI;
 import fiskfille.alpaca.common.data.DataManager;
 
 public class GuiOverlay extends Gui
@@ -48,7 +48,7 @@ public class GuiOverlay extends Gui
     
     public void renderMomentum(RenderGameOverlayEvent.Pre event, int width, int height, EntityPlayer player)
     {
-    	if (AlpacaModels.isAlpaca(player))
+    	if (AlpacaAPI.isAlpaca(player))
         {
     		int momentum = DataManager.getMomentum(player);
     		int x = 6;
