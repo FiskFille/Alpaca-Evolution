@@ -1,6 +1,7 @@
 package fiskfille.alpaca.common.event;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
@@ -49,6 +50,7 @@ import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import fiskfille.alpaca.Alpaca;
+import fiskfille.alpaca.AlpacaAPI;
 import fiskfille.alpaca.AlpacaReflection;
 import fiskfille.alpaca.client.gui.GuiModOptions;
 import fiskfille.alpaca.client.keybinds.AlpacaKeyBinds;
@@ -56,8 +58,6 @@ import fiskfille.alpaca.client.model.entity.ModelAlpaca;
 import fiskfille.alpaca.client.model.entity.ModelAlpacaBase;
 import fiskfille.alpaca.client.render.entity.RenderPlayerHand;
 import fiskfille.alpaca.common.color.ColorHelper;
-import fiskfille.alpaca.common.data.AlpacaModels;
-import fiskfille.alpaca.common.data.AlpacaSkins;
 import fiskfille.alpaca.common.entity.EntityTongue;
 import fiskfille.alpaca.common.packet.PacketKeyInput;
 import fiskfille.alpaca.common.packet.PacketManager;
@@ -96,7 +96,7 @@ public class ClientEventHandler
 		RenderPlayer render = (RenderPlayer) RenderManager.instance.entityRenderMap.get(player.getClass());;
 		ClientEventHandler clientEventHandler = Alpaca.proxy.clientEventHandler;
 
-		if (AlpacaModels.isAlpacaClient(player) && render != null && clientEventHandler != null)
+		if (AlpacaAPI.isAlpacaClient(player) && render != null && clientEventHandler != null)
 		{
 			event.setCanceled(true);
 			RenderPlayer rend = (RenderPlayer) RenderManager.instance.getEntityRenderObject(player);
@@ -113,7 +113,7 @@ public class ClientEventHandler
 			GL11.glPopMatrix();
 		}
 		
-		if (!AlpacaModels.isAlpacaClient(player) && render != null)
+		if (!AlpacaAPI.isAlpacaClient(player) && render != null)
 		{
 			ModelBiped model = render.modelBipedMain;
 			
@@ -138,10 +138,10 @@ public class ClientEventHandler
 			
 			for (ModelRenderer modelrenderer : new ModelRenderer[] { model.bipedHead, model.bipedHeadwear, model.bipedBody, model.bipedRightArm, model.bipedLeftArm, model.bipedRightLeg, model.bipedLeftLeg })
 			{
-				modelrenderer.offsetY = AlpacaModels.isAlpacaClient(player) ? 256.0085F : 0;
+				modelrenderer.offsetY = AlpacaAPI.isAlpacaClient(player) ? 256.0085F : 0;
 			}
 			
-			if (AlpacaModels.isAlpacaClient(player))
+			if (AlpacaAPI.isAlpacaClient(player))
 			{
 				GL11.glPushMatrix();
 				float scale = 1.05F;
@@ -321,19 +321,19 @@ public class ClientEventHandler
 		TextureManager textureManager = mc.getTextureManager();
 		ModelAlpacaBase modelAlpaca = ClientProxy.getModelAlpaca(player);
 
-		textureManager.bindTexture(AlpacaSkins.getTexture(player));
+		textureManager.bindTexture(AlpacaAPI.getAlpacaTexture(player));
 		if (color) {GL11.glColor4f(1, 1, 1, alpha);}
 		modelAlpaca.render(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F);
 
-		textureManager.bindTexture(AlpacaSkins.getTextureOverlay(player));
-		if (color) {ColorHelper.setColorFromInt(ColorHelper.getAlpacaColor(player), alpha);}
+		textureManager.bindTexture(AlpacaAPI.getAlpacaTextureOverlay(player));
+		if (color) {ColorHelper.setColorFromInt(AlpacaAPI.getAlpacaColor(player), alpha);}
 		modelAlpaca.render(player, f7, f6, 0, player.rotationYawHead - player.renderYawOffset, player.rotationPitch, 0.0625F);
 	}
 
 	@SubscribeEvent
 	public void onRenderPlayerSpecialsPre(RenderPlayerEvent.Specials.Pre event)
 	{
-		if (AlpacaModels.isAlpacaClient(event.entityPlayer) && !event.isCanceled())
+		if (AlpacaAPI.isAlpacaClient(event.entityPlayer) && !event.isCanceled())
 		{
 			event.setCanceled(true);
 			AbstractClientPlayer player = (AbstractClientPlayer) event.entityPlayer;
@@ -611,7 +611,7 @@ public class ClientEventHandler
 
 			for (int i = 0; i < amodel.length; ++i)
 			{
-				amodel[i].isHidden = AlpacaModels.isAlpacaClient(event.entityPlayer);
+				amodel[i].isHidden = AlpacaAPI.isAlpacaClient(event.entityPlayer);
 			}
 		}
 	}
@@ -628,7 +628,7 @@ public class ClientEventHandler
         	mc.displayGuiScreen(new GuiModOptions());
         }
         
-        if (AlpacaKeyBinds.keyBindingLick.getIsKeyPressed() && mc.currentScreen == null && AlpacaModels.isAlpaca(player))
+        if (AlpacaKeyBinds.keyBindingLick.getIsKeyPressed() && mc.currentScreen == null && AlpacaAPI.isAlpaca(player))
         {
         	int key = AlpacaKeyBinds.keyBindingLick.getKeyCode();
         	PacketManager.networkWrapper.sendToServer(new PacketKeyInput(key));

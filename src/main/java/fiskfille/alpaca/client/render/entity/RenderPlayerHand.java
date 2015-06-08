@@ -7,13 +7,11 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import fiskfille.alpaca.Alpaca;
+import fiskfille.alpaca.AlpacaAPI;
 import fiskfille.alpaca.common.color.ColorHelper;
-import fiskfille.alpaca.common.data.AlpacaSkins;
 
 public class RenderPlayerHand extends RenderPlayer
 {
@@ -55,11 +53,11 @@ public class RenderPlayerHand extends RenderPlayer
 
             TextureManager textureManager = mc.getTextureManager();
             
-            textureManager.bindTexture(AlpacaSkins.getTexture(player));
+            textureManager.bindTexture(AlpacaAPI.getAlpacaTexture(player));
             biped.bipedRightArm.render(0.0625F);
 
-            textureManager.bindTexture(AlpacaSkins.getTextureOverlay(player));
-            ColorHelper.setColorFromInt(ColorHelper.getAlpacaColor(player), 1.0F);
+            textureManager.bindTexture(AlpacaAPI.getAlpacaTextureOverlay(player));
+            ColorHelper.setColorFromInt(AlpacaAPI.getAlpacaColor(player), 1.0F);
             biped.bipedRightArm.render(0.0625F);
             biped.bipedRightArm = arm;
 
