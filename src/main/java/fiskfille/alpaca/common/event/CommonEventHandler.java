@@ -1,29 +1,37 @@
 package fiskfille.alpaca.common.event;
 
-import java.util.Random;
+import java.util.List;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.player.ArrowLooseEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import fiskfille.alpaca.common.data.AlpacaModels;
 import fiskfille.alpaca.common.data.DataManager;
 import fiskfille.alpaca.common.entity.EntityCorpse;
+import fiskfille.alpaca.common.item.AlpacaItems;
 import fiskfille.alpaca.common.packet.PacketManager;
 import fiskfille.alpaca.common.packet.PacketSetCorpseEntity;
 
@@ -35,7 +43,7 @@ public class CommonEventHandler
         EntityPlayer player = event.entityPlayer;
         Entity target = event.target;
 
-        if (target != null && target.isEntityAlive() && target instanceof EntityCorpse)
+        if (AlpacaModels.isAlpaca(player) && target != null && target.isEntityAlive() && target instanceof EntityCorpse)
         {
             event.setCanceled(true);
             target.setDead();
@@ -51,7 +59,6 @@ public class CommonEventHandler
 
             if (!corpse.worldObj.isRemote)
             {
-
                 i = 2;
 
                 while (i > 0)
@@ -61,8 +68,6 @@ public class CommonEventHandler
                     corpse.worldObj.spawnEntityInWorld(new EntityXPOrb(corpse.worldObj, corpse.posX, corpse.posY, corpse.posZ, j));
                 }
             }
-
-            DataManager.setEntitiesEaten(player, DataManager.getEntitiesEaten(player) + 1);
         }
     }
 
@@ -71,7 +76,7 @@ public class CommonEventHandler
     {
         EntityLivingBase entity = event.entityLiving;
 
-        if (entity != null && entity.worldObj != null && shouldLeaveCorpse(entity))
+        if (entity != null && entity.worldObj != null && shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaModels.isAlpaca((EntityPlayer)event.source.getEntity()))
         {
             World world = entity.worldObj;
             EntityCorpse corpse = new EntityCorpse(world);
@@ -97,8 +102,13 @@ public class CommonEventHandler
     public void onLivingDrops(LivingDropsEvent event)
     {
         EntityLivingBase entity = event.entityLiving;
-
-        if (shouldLeaveCorpse(entity))
+        
+        if (entity instanceof EntityVillager || entity instanceof EntityPlayer)
+        {
+        	event.drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, new ItemStack(AlpacaItems.face)));
+        }
+        
+        if (shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaModels.isAlpaca((EntityPlayer)event.source.getEntity()))
         {
             entity.setLocationAndAngles(0, 0, 0, 0, 0);
         }
@@ -107,90 +117,119 @@ public class CommonEventHandler
     @SubscribeEvent
     public void onUseItem(PlayerUseItemEvent.Finish event)
     {
-        if (event.item.getItem() instanceof ItemFood)
+        if (AlpacaModels.isAlpaca(event.entityPlayer) && event.item.getItem() instanceof ItemFood)
         {
             ItemFood item = (ItemFood) event.item.getItem();
             FoodStats food = event.entityPlayer.getFoodStats();
             food.addStats(-item.func_150905_g(event.item), -item.func_150906_h(event.item));
         }
     }
-
+    
     @SubscribeEvent
-    public void onArrowLoose(ArrowLooseEvent event)
+    public void onPlayerUpdate(PlayerTickEvent event)
     {
-        event.setCanceled(true);
-        EntityPlayer player = event.entityPlayer;
-        World world = player.worldObj;
-        ItemStack itemstack = event.bow;
-        Random itemRand = new Random();
-
-        int j = event.charge;
-        boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
-
-        if (flag || player.inventory.hasItem(Items.arrow))
-        {
-            float f = (float) j / 20.0F;
-            f = (f * f + f * 2.0F) / 3.0F;
-
-            if ((double) f < 0.1D)
-            {
-                return;
-            }
-
-            if (f > 1.0F)
-            {
-                f = 1.0F;
-            }
-
-            EntityArrow entityarrow = new EntityArrow(world, player, f * 2.0F);
-
-            if (f == 1.0F)
-            {
-                entityarrow.setIsCritical(true);
-            }
-
-            int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, itemstack);
-
-            if (k > 0)
-            {
-                entityarrow.setDamage(entityarrow.getDamage() + (double) k * 0.5D + 0.5D);
-            }
-
-            int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, itemstack);
-
-            if (l > 0)
-            {
-                entityarrow.setKnockbackStrength(l);
-            }
-
-            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, itemstack) > 0)
-            {
-                entityarrow.setFire(100);
-            }
-
-            itemstack.damageItem(1, player);
-            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-
-            if (flag)
-            {
-                entityarrow.canBePickedUp = 2;
-            }
-            else
-            {
-                player.inventory.consumeInventoryItem(Items.arrow);
-            }
-
-            entityarrow.posY -= 0.5F;
-
-            if (!world.isRemote)
-            {
-                world.spawnEntityInWorld(entityarrow);
-            }
-        }
+    	EntityPlayer player = event.player;
+    	int momentum = DataManager.getMomentum(player);
+    	
+    	if (player.ticksExisted % 2 == 0)
+    	{
+        	if (player.isSprinting())
+        	{
+        		DataManager.setMomentum(player, ++momentum);
+        	}
+        	else 
+        	{
+        		DataManager.setMomentum(player, 0);
+        	}
+        	
+        	if (!AlpacaModels.isAlpaca(player))
+        	{
+        		DataManager.setMomentum(player, 0);
+        		player.stepHeight = 0.5F;
+        	}
+        	else
+        	{
+        		player.stepHeight = 1.0F;
+        	}
+    	}
     }
-
-    public boolean shouldLeaveCorpse(EntityLivingBase entity)
+    
+    @SubscribeEvent
+    public void onLivingJump(LivingJumpEvent event)
     {
-        return !(entity instanceof EntityCorpse);
+    	if (event.entity instanceof EntityPlayer)
+    	{
+    		EntityPlayer player = (EntityPlayer)event.entity;
+    		
+    		float f = (float)DataManager.getMomentum(player) / 200;
+    		f = Math.min(f, 0.5F);
+    		player.motionY += f;
+    		DataManager.setMomentum(player, 0);
+    	}
+    }
+    
+    @SubscribeEvent
+    public void onLivingFall(LivingFallEvent event)
+    {
+    	if (event.entity instanceof EntityPlayer)
+    	{
+    		EntityPlayer player = (EntityPlayer)event.entity;
+    		event.distance /= 1.75F;
+    	}
+    }
+    
+    @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event)
+    {
+    	if (event.source.getEntity() instanceof EntityPlayer)
+    	{
+    		EntityPlayer player = (EntityPlayer)event.source.getEntity();
+    		EntityLivingBase entity = event.entityLiving;
+    		
+    		Vec3 frontCoords = getFrontCoords(entity, player, (float)DataManager.getMomentum(player) / 40, true);
+			entity.motionX = (frontCoords.xCoord - entity.posX);
+			entity.motionY = (frontCoords.yCoord - entity.posY);
+			entity.motionZ = (frontCoords.zCoord - entity.posZ);
+			event.ammount += (float)DataManager.getMomentum(player) / 20;
+			
+			DataManager.setMomentum(player, 0);
+			player.swingItem();
+    	}
+    }
+    
+    public static List<EntityLivingBase> getEntitiesNear(World world, double x, double y, double z, float radius)
+	{
+		List<EntityLivingBase> list = world.selectEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius), IEntitySelector.selectAnything);
+		return list;
+	}
+
+	public static Vec3 getFrontCoords(EntityLivingBase living, EntityPlayer player, double amount, boolean pitch)
+	{
+		float f = 1.0F;
+		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
+		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
+
+		if (!pitch)
+		{
+			f1 = 0;
+		}
+
+		double d0 = living.prevPosX + (living.posX - living.prevPosX) * (double)f;
+		double d1 = living.prevPosY + (living.posY - living.prevPosY) * (double)f;
+		double d2 = living.prevPosZ + (living.posZ - living.prevPosZ) * (double)f;
+		Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
+		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float)Math.PI);
+		float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
+		float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+		float f6 = MathHelper.sin(-f1 * 0.017453292F);
+		float f7 = f4 * f5;
+		float f8 = f3 * f5;
+		Vec3 vec31 = vec3.addVector(f7 * amount, f6 * amount, f8 * amount);
+		return vec31;
+	}
+
+    public static boolean shouldLeaveCorpse(EntityLivingBase entity)
+    {
+    	return !(entity instanceof EntityCorpse || entity instanceof IBossDisplayData);
     }
 }

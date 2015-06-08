@@ -53,7 +53,7 @@ public class PacketSetCorpseEntity implements IMessage
                 {
                     EntityCorpse corpse = (EntityCorpse) entity1;
                     
-                    if(corpse.entity != null)
+                    if (entity != null)
                     {
                         // corpse.entity = (EntityLivingBase)EntityHelper.getEntityFromClass(entity.getClass(), corpse.worldObj);
                         corpse.entity = entity;

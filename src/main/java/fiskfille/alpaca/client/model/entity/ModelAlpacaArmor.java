@@ -40,8 +40,8 @@ public class ModelAlpacaArmor extends ModelBase
         this.armorBody.addBox(-4.0F, -6.0F, 0.98F, 8, 12, 4, 0.0F);
         this.setRotateAngle(armorBody, 1.5707963267948966F, 0.0F, 0.0F);
         this.armorBreastplate = new FiskModelRenderer(this, 20, 20);
-        this.armorBreastplate.setRotationPoint(0.0F, 12.5F, -6.7F);
-        this.armorBreastplate.addBox(-4.0F, -6.0F, 0.0F, 8, 12, 0, 0.1F);
+        this.armorBreastplate.setRotationPoint(0.0F, 12.5F, -6.6F);
+        this.armorBreastplate.addBox(-4.0F, -6.0F, 0.0F, 8, 12, 0, 0.01F);
     }
 
     public void renderHelmet()

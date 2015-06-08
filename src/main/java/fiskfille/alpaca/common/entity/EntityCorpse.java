@@ -11,6 +11,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import fiskfille.alpaca.common.packet.PacketManager;
 import fiskfille.alpaca.common.packet.PacketSyncXp;
 
@@ -39,6 +41,12 @@ public class EntityCorpse extends EntityLiving
     public boolean isEntityInvulnerable()
     {
         return ticksExisted <= 20;
+    }
+    
+    @SideOnly(Side.CLIENT)
+    public float getShadowSize()
+    {
+    	return 0.0F;
     }
 
     public void onUpdate()

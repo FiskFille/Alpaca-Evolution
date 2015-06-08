@@ -5,6 +5,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import fiskfille.alpaca.client.file.ModOptions;
 import fiskfille.alpaca.common.packet.PacketManager;
 import fiskfille.alpaca.common.proxy.CommonProxy;
 
@@ -23,6 +24,7 @@ public class Alpaca
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+    	ModOptions.load();
         PacketManager.registerPackets();
         proxy.preInit();
     }
