@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.util.ResourceLocation;
 
@@ -43,8 +44,8 @@ public class RenderCorpse extends RenderLiving
                 {
                     GL11.glTranslatef(-entity.entity.height / 4, entity.entity.width / 2, -entity.entity.height / 4);
                 }
-
-                render.doRender(entity.entity, d, d1, d2, f, f1);
+                
+                render.doRender(entity.entity, d, d1, d2, f, 0F);
                 GL11.glPopMatrix();
             }
         }
