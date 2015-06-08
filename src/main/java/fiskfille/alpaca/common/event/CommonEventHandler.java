@@ -1,22 +1,20 @@
 package fiskfille.alpaca.common.event;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -24,8 +22,7 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import fiskfille.alpaca.common.data.AlpacaModels;
 import fiskfille.alpaca.common.data.DataManager;
 import fiskfille.alpaca.common.entity.EntityCorpse;
-import fiskfille.alpaca.common.entity.EntityTongue;
-import fiskfille.alpaca.common.packet.PacketLick;
+import fiskfille.alpaca.common.item.AlpacaItems;
 import fiskfille.alpaca.common.packet.PacketManager;
 import fiskfille.alpaca.common.packet.PacketSetCorpseEntity;
 
@@ -96,7 +93,12 @@ public class CommonEventHandler
     public void onLivingDrops(LivingDropsEvent event)
     {
         EntityLivingBase entity = event.entityLiving;
-
+        
+        if (entity instanceof EntityVillager)
+        {
+        	event.drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, new ItemStack(AlpacaItems.face)));
+        }
+        
         if (shouldLeaveCorpse(entity) && event.source.getEntity() instanceof EntityPlayer && AlpacaModels.isAlpaca((EntityPlayer)event.source.getEntity()))
         {
             entity.setLocationAndAngles(0, 0, 0, 0, 0);

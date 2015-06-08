@@ -76,7 +76,7 @@ public class EntityTongue extends EntityThrowable
     
     protected float func_70182_d()
     {
-        return 0.2F;
+        return 0.4F;
     }
 	
     @SideOnly(Side.CLIENT)

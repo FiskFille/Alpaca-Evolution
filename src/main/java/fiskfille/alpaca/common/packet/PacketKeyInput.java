@@ -53,6 +53,7 @@ public class PacketKeyInput implements IMessage
             		if (ClientEventHandler.getToungeEntities(player).size() > 0)
             		{
             			ClientEventHandler.killAllToungeEntitiesForPlayer(player);
+            			world.playSoundAtEntity(entity, "mob.slime.small", 1.0F, 0.6F);
             		}
             		else
             		{
@@ -60,6 +61,8 @@ public class PacketKeyInput implements IMessage
             			{
             				world.spawnEntityInWorld(entity);
             			}
+            			
+            			world.playSoundAtEntity(entity, "mob.slime.attack", 1.0F, 1.1F);
             		}
             		
             		PacketManager.networkWrapper.sendToServer(new PacketLick(entity, player));

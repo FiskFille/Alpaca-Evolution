@@ -112,6 +112,19 @@ public class ClientEventHandler
 			RenderManager.instance.entityRenderMap.put(player.getClass(), rend);
 			GL11.glPopMatrix();
 		}
+		
+		if (!AlpacaModels.isAlpacaClient(player))
+		{
+			ModelBiped model = render.modelBipedMain;
+			
+			for (ModelRenderer modelrenderer : new ModelRenderer[] { model.bipedHead, model.bipedHeadwear, model.bipedBody, model.bipedRightArm, model.bipedLeftArm, model.bipedRightLeg, model.bipedLeftLeg })
+			{
+				if (modelrenderer.offsetY == 256.0085F)
+				{
+					modelrenderer.offsetY = 0;
+				}
+			}
+		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -122,11 +135,14 @@ public class ClientEventHandler
 			EntityPlayer player = (EntityPlayer) event.entity;
 			RenderPlayer render = (RenderPlayer) event.renderer;
 			ModelBiped model = render.modelBipedMain;
-
+			
+			for (ModelRenderer modelrenderer : new ModelRenderer[] { model.bipedHead, model.bipedHeadwear, model.bipedBody, model.bipedRightArm, model.bipedLeftArm, model.bipedRightLeg, model.bipedLeftLeg })
+			{
+				modelrenderer.offsetY = AlpacaModels.isAlpacaClient(player) ? 256.0085F : 0;
+			}
+			
 			if (AlpacaModels.isAlpacaClient(player))
 			{
-				event.setCanceled(true);
-				
 				GL11.glPushMatrix();
 				float scale = 1.05F;
 				GL11.glTranslatef((float) event.x, (float) event.y, (float) event.z);
