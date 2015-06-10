@@ -92,6 +92,10 @@ public class AlpacaAPI
             {
             	return 0x007000;
             }
+            else if (s.equals("a94683c5-aac9-464f-b064-67b1696237a5")) //Lars
+            {
+            	return 0xFC7B1E;
+            }
             else if (alpacaTextures.containsKey(s))
             {
             	return 0xFFFFFF;
